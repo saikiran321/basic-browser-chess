@@ -462,8 +462,16 @@
     <div id="license">
     <br />
     <a href="http://www.gnu.org/licenses/gpl.html" target="_blank"> <!-- open the license in a new window -->
-        <img src="http://www.gnu.org/graphics/gplv3-127x51.png" border="0" alt="General Public License v3" />
-        <!--img src="http://www.gnu.org/graphics/gplv3-88x31.png" border="0" alt="General Public License v3" /-->
+        <img src="http://www.gnu.org/graphics/gplv3-127x51.png" border="0" alt="General Public License v3" /> <!-- What if user has no connection? -->
+    </a>
+    </div>
+
+    <div id="moveLog">
+    </div>
+
+    <div id="image">
+    <a href="http://www.gnu.org/licenses/gpl.html" target="_blank"> <!-- open the license in a new window -->
+        <img src="file:///home/dennis/Pictures/gnu-and-penguin-color-300x276.jpg" border="0" alt="General Public License v3" />
     </a>
     </div>
 </body>
