@@ -77,13 +77,15 @@
         oldSquare=id; // update the old square
     }
     </script>
-	
+
     <script type="text/javascript">
     var fromPiece, toPiece, fromSquare, toSquare;
     function movePiece(from, to) // using DOM
     {
         var piece = document.getElementById(from).innerHTML;
 
+//TODO: check what colour the first piece is, check what colour the second piece is
+// issue #5
         if(piece == "&nbsp;") // if first square is empty, do not move
         {
             pickNum--; // decrement to keep turn accurate
@@ -323,15 +325,12 @@
     <div id="welcome">
     <h2 style="color: #fff; background-color: #09f; width: 285px;">Basic Browser Chess (BBC)</h2>
     <p>BBC is an open source interactive chess GUI that is meant to be a substitute for chess sets.<br>
-        Players that do not have any equipment can still play local games with a friend using BBC.<br>
-        BBC was made with the Keep It Simple (KIS) principle.</p>
     <p>BBC does not use a chess engine, so you cannot play against the computer.<br>
         There are no constraints and rule checking &mdash;
         <b>constraints and rules are to be enforced by the players</b> just like in an actual game.<br>
         This means that the players have to call check, mate, and make sure no illegal moves are played.</p>
-    <p>I created BBC as a personal project to learn how to create <a href="http://www.w3schools.com/dhtml/dhtml_intro.asp">DHTML</a> pages.<br>
-        This is why I didn't use the <a href="http://mip.noekeon.org/HTMLTTChess/index.html">HTMLTTChess</a> package for rendering a nice chess board.<br>
-        However, feel free to make a modified version of BBC that uses HTMLTTChess.</p>
+    <p>To learn more about this project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a>.<br>
+        If you liked this, check out a more complex chess project of mine: <a href="http://code.google.com/p/divs/">DIVS</a>.</p>
 
     <button class="start" style="color: #fff; padding: 2px 5px; border: 2px solid; border-color: #7bf #07c #07c #7bf; background-color: #09f;
         font-family: Georgia, ..., serif; font-size: 18px; display: block; height: 30px; width: 250px;">Begin Battle</button>
@@ -467,12 +466,6 @@
     </div>
 
     <div id="moveLog">
-    </div>
-
-    <div id="image">
-    <a href="http://www.gnu.org/licenses/gpl.html" target="_blank"> <!-- open the license in a new window -->
-        <img src="file:///home/dennis/Pictures/gnu-and-penguin-color-300x276.jpg" border="0" alt="General Public License v3" />
-    </a>
     </div>
 </body>
 </html>
