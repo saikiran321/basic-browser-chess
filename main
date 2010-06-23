@@ -445,7 +445,7 @@
         <td id="h1" align="center" width=35 height=38 onclick="pick(id)">&#9814;</td>
     </tr>
     </table>
-
+<!-- obsolete code: table of options
     <br />
     <table id="options">
     <tr>
@@ -479,16 +479,17 @@
     table.frame="above";
     table.createCaption().innerHTML="Options";
     </script>
+-->
     </div>
 
     <!-- Michael Meadhra from TechRepublic wrote a great guide for centred layouts (http://search.techrepublic.com.com/search/Michael%20Meadhra.html) -->
-    <div id="outer"> 
-        <div id="header"> 
-            <h2 style="color: #09f;">Basic Browser Chess (BBC)</h2> 
-        </div> 
+    <div id="outer">
+        <div id="header">
+            <h2 style="color: #09f;">Basic Browser Chess (BBC)</h2>
+        </div>
         <div id="options"> <!-- TODO: possibly remove <li> and make this div's length longer -->
-            <h4><center>Options</center></h4> 
-            <ul> 
+            <h4><center>Options</center></h4>
+            <ul>
                 <li><input type="button" id="undoBtn" onclick="undo()" value="Undo Move" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
                 <li><input type="button" id="colourBtn" onclick="changeBoard()" value="Change Board" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
                 <li><input type="button" id="sizeBtn" onclick="resize()" value="Larger Board" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
@@ -498,27 +499,19 @@
                 <li><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
                 <li><input type="button" id="Btn" onclick="" value="Placeholder" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
             <!-- Move Placeholder to top, change to 'Start Game', change font colour to red, remove 'Begin Battle' -->
-            </ul> 
-            
-            <script type="text/javascript">
-            /* If options were in a table (as previously done), then a nice caption can be created...
-            var table=document.getElementById('options');
-            table.frame="above";
-            table.createCaption().innerHTML="Options";
-            */
-            </script>
-        </div> 
-        <div id="main"> 
+            </ul>
+        </div>
+        <div id="main">
             <p>BBC is an open source interactive chess GUI that is meant to be a substitute for chess sets.</p>
             <p>BBC does not use a chess engine, so you cannot play against the computer.<br> There are no constraints and rule checking &mdash; <b>constraints and rules are to be enforced by the players</b> just like in an actual game. This means that the players have to call check, mate, and make sure no illegal moves are played.</p>
             <p>To learn more about this project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a><br>If you liked this, check out a more complex chess project of mine: <a href="http://code.google.com/p/divs/">DIVS</a></p>
         <!-- Board will be visible from start but not the pieces. 'Begin Battle' will make pieces fade in on board (and possibly remove welcome msg) -->
             <button class="start" style="color: #fff; padding: 2px 5px; border: 2px solid; border-color: #7bf #07c #07c #7bf; background-color: #09f; font-family: Georgia, ..., serif; font-size: 18px; display: block; height: 30px; width: 250px;">Begin Battle</button>
-        </div> 
+        </div>
         <div id="footer">
             <p><a href="http://www.gnu.org/licenses/gpl.html" target="_blank"><img src="http://www.gnu.org/graphics/gplv3-127x51.png" border="0" alt="General Public License v3"/></a>
-            Copyright (C) 2010  Dennis M.C. Ideler (ideler@acm.org)</p> 
-        </div> 
-    </div> 
+            Copyright (C) 2010  Dennis M.C. Ideler (ideler@acm.org)</p>
+        </div>
+    </div>
 </body>
 </html>
