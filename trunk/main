@@ -24,7 +24,44 @@
     <title>Basic Browser Chess - BBC</title>
     <meta name="Keywords" content="chess,browser,turn-based,basic,multiplayer,local,unicode">
     <meta name="Description" content="BBC is a free local multiplayer chess game that focuses on simplicity. There is no AI, no constraints, and the game is made with HTML and JavaScript.">
-    <style></style>
+    <style type="text/css"> 
+    body {
+        background-color: #999999;
+        font-size:12px;
+        font-family:Verdana, Arial, Helvetica, sans-serif;
+    }
+    div#outer {
+        width: 80%;
+        background-color:#FFFFFF;
+        margin-top: 50px;
+        margin-bottom: 50px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0px;
+        border: thin solid #000000;
+    }
+    div#header {
+        padding: 15px;
+        margin: 0px;
+        text-align: center;
+    }
+    div#options {
+        width: 25%;
+        padding: 10px;
+        margin-top: 1px;
+        float: left;
+    }
+    div#main {
+        margin-left: 30%;
+        margin-top: 1px;
+        padding: 10px;
+    }
+    div#footer {
+        padding: 15px;
+        margin: 0px;
+        border-top: thin solid #000000;
+    }
+    </style> 
 
     <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
 
@@ -35,7 +72,7 @@
         $(".start").click(function()
         {
             //$("#welcome").fadeOut(1000,function(){ $("#game").fadeIn(1000); });
-            $("#welcome").slideUp("normal",function()
+            $("#main").slideUp("normal",function()
             {
                 $("#game").slideDown("slow");
             });
@@ -322,20 +359,6 @@
 </head>
 
 <body>
-    <div id="welcome">
-    <h2 style="color: #fff; background-color: #09f; width: 285px;">Basic Browser Chess (BBC)</h2>
-    <p>BBC is an open source interactive chess GUI that is meant to be a substitute for chess sets.<br>
-    <p>BBC does not use a chess engine, so you cannot play against the computer.<br>
-        There are no constraints and rule checking &mdash;
-        <b>constraints and rules are to be enforced by the players</b> just like in an actual game.<br>
-        This means that the players have to call check, mate, and make sure no illegal moves are played.</p>
-    <p>To learn more about this project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a>.<br>
-        If you liked this, check out a more complex chess project of mine: <a href="http://code.google.com/p/divs/">DIVS</a>.</p>
-
-    <button class="start" style="color: #fff; padding: 2px 5px; border: 2px solid; border-color: #7bf #07c #07c #7bf; background-color: #09f;
-        font-family: Georgia, ..., serif; font-size: 18px; display: block; height: 30px; width: 250px;">Begin Battle</button>
-    </div>
-
     <div id="game">
     <!-- Initial board setup -->
     <table id="board" cellspacing="0" border="5" style="font-size:25px; cursor:hand;">
@@ -458,14 +481,44 @@
     </script>
     </div>
 
-    <div id="license">
-    <br />
-    <a href="http://www.gnu.org/licenses/gpl.html" target="_blank"> <!-- open the license in a new window -->
-        <img src="http://www.gnu.org/graphics/gplv3-127x51.png" border="0" alt="General Public License v3" /> <!-- What if user has no connection? -->
-    </a>
-    </div>
-
-    <div id="moveLog">
-    </div>
+    <!-- Michael Meadhra from TechRepublic wrote a great guide for centred layouts (http://search.techrepublic.com.com/search/Michael%20Meadhra.html) -->
+    <div id="outer"> 
+        <div id="header"> 
+            <h2 style="color: #09f;">Basic Browser Chess (BBC)</h2> 
+        </div> 
+        <div id="options"> <!-- TODO: possibly remove <li> and make this div's length longer -->
+            <h4><center>Options</center></h4> 
+            <ul> 
+                <li><input type="button" id="undoBtn" onclick="undo()" value="Undo Move" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
+                <li><input type="button" id="colourBtn" onclick="changeBoard()" value="Change Board" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
+                <li><input type="button" id="sizeBtn" onclick="resize()" value="Larger Board" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
+                <li><input type="button" id="resetLookBtn" onclick="resetGraphics()" value="Reset Graphics" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
+                <li><input type="button" id="borderBtn" onclick="borders()" value="Borders On/Off" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
+                <li><input type="button" id="spaceBtn" onclick="spacing()" value="Change Cellspacing" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
+                <li><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
+                <li><input type="button" id="Btn" onclick="" value="Placeholder" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
+            <!-- Move Placeholder to top, change to 'Start Game', change font colour to red, remove 'Begin Battle' -->
+            </ul> 
+            
+            <script type="text/javascript">
+            /* If options were in a table (as previously done), then a nice caption can be created...
+            var table=document.getElementById('options');
+            table.frame="above";
+            table.createCaption().innerHTML="Options";
+            */
+            </script>
+        </div> 
+        <div id="main"> 
+            <p>BBC is an open source interactive chess GUI that is meant to be a substitute for chess sets.</p>
+            <p>BBC does not use a chess engine, so you cannot play against the computer.<br> There are no constraints and rule checking &mdash; <b>constraints and rules are to be enforced by the players</b> just like in an actual game. This means that the players have to call check, mate, and make sure no illegal moves are played.</p>
+            <p>To learn more about this project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a><br>If you liked this, check out a more complex chess project of mine: <a href="http://code.google.com/p/divs/">DIVS</a></p>
+        <!-- Board will be visible from start but not the pieces. 'Begin Battle' will make pieces fade in on board (and possibly remove welcome msg) -->
+            <button class="start" style="color: #fff; padding: 2px 5px; border: 2px solid; border-color: #7bf #07c #07c #7bf; background-color: #09f; font-family: Georgia, ..., serif; font-size: 18px; display: block; height: 30px; width: 250px;">Begin Battle</button>
+        </div> 
+        <div id="footer">
+            <p><a href="http://www.gnu.org/licenses/gpl.html" target="_blank"><img src="http://www.gnu.org/graphics/gplv3-127x51.png" border="0" alt="General Public License v3"/></a>
+            Copyright (C) 2010  Dennis M.C. Ideler (ideler@acm.org)</p> 
+        </div> 
+    </div> 
 </body>
 </html>
