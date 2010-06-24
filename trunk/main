@@ -56,12 +56,17 @@
         margin-top: 1px;
         padding: 10px;
     }
+    div#game {
+	margin-left: 35%;
+        margin-top: 1px;
+        padding: 10px;
+    }
     div#footer {
         padding: 15px;
         margin: 0px;
         border-top: thin solid #000000;
     }
-    </style> 
+    </style> <!-- TODO fix padding for large and small board (and for header) -->
 
     <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
 
@@ -359,92 +364,116 @@
 </head>
 
 <body>
-    <div id="game">
-    <!-- Initial board setup -->
-    <table id="board" cellspacing="0" border="5" style="font-size:25px; cursor:hand;">
-    <tr>
-        <!-- <td onmouseover="this.style.background='red';this.style.cursor='pointer'"
-        onmouseout="this.style.background='white';" onclick="alert('bang')">Test</td> -->
-        <td id="a8" align="center" width=35 height=38 onclick="pick(id)"><!--font size="5"-->&#9820;</td>
-        <td id="b8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9822;</td>
-        <td id="c8" align="center" width=35 height=38 onclick="pick(id)">&#9821;</td>
-        <td id="d8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9819;</td>
-        <td id="e8" align="center" width=35 height=38 onclick="pick(id)">&#9818;</td>
-        <td id="f8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9821;</td>
-        <td id="g8" align="center" width=35 height=38 onclick="pick(id)">&#9822;</td>
-        <td id="h8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9820;</td>
-    </tr>
-    <tr>
-        <td id="a7" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9823;</td>
-        <td id="b7" align="center" width=35 height=38 onclick="pick(id)">&#9823;</td>
-        <td id="c7" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9823;</td>
-        <td id="d7" align="center" width=35 height=38 onclick="pick(id)">&#9823;</td>
-        <td id="e7" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9823;</td>
-        <td id="f7" align="center" width=35 height=38 onclick="pick(id)">&#9823;</td>
-        <td id="g7" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9823;</td>
-        <td id="h7" align="center" width=35 height=38 onclick="pick(id)">&#9823;</td>
-    </tr>
-    <tr>
-        <td id="a6" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-        <td id="b6" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-        <td id="c6" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-        <td id="d6" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-        <td id="e6" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-        <td id="f6" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-        <td id="g6" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-        <td id="h6" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-    </tr>
-    <tr>
-        <td id="a5" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-        <td id="b5" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-        <td id="c5" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-        <td id="d5" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-        <td id="e5" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-        <td id="f5" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-        <td id="g5" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-        <td id="h5" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-    </tr>
-    <tr>
-        <td id="a4" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-        <td id="b4" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-        <td id="c4" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-        <td id="d4" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-        <td id="e4" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-        <td id="f4" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-        <td id="g4" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-        <td id="h4" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-    </tr>
-    <tr>
-        <td id="a3" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-        <td id="b3" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-        <td id="c3" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-        <td id="d3" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-        <td id="e3" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-        <td id="f3" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-        <td id="g3" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
-        <td id="h3" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
-    </tr>
-    <tr>
-        <td id="a2" align="center" width=35 height=38 onclick="pick(id)">&#9817;</td>
-        <td id="b2" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9817;</td>
-        <td id="c2" align="center" width=35 height=38 onclick="pick(id)">&#9817;</td>
-        <td id="d2" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9817;</td>
-        <td id="e2" align="center" width=35 height=38 onclick="pick(id)">&#9817;</td>
-        <td id="f2" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9817;</td>
-        <td id="g2" align="center" width=35 height=38 onclick="pick(id)">&#9817;</td>
-        <td id="h2" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9817;</td>
-    </tr>
-    <tr>
-        <td id="a1" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9814;</td>
-        <td id="b1" align="center" width=35 height=38 onclick="pick(id)">&#9816;</td>
-        <td id="c1" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9815;</td>
-        <td id="d1" align="center" width=35 height=38 onclick="pick(id)">&#9813;</td>
-        <td id="e1" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9812;</td>
-        <td id="f1" align="center" width=35 height=38 onclick="pick(id)">&#9815;</td>
-        <td id="g1" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9816;</td>
-        <td id="h1" align="center" width=35 height=38 onclick="pick(id)">&#9814;</td>
-    </tr>
-    </table>
+    <!-- Michael Meadhra from TechRepublic wrote a great guide for centred layouts (http://search.techrepublic.com.com/search/Michael%20Meadhra.html) -->
+    <div id="outer">
+        <div id="header">
+            <h2 style="color: #09f;">Basic Browser Chess (BBC)</h2>
+        </div>
+        <div id="options"> <!-- TODO: possibly remove <li> and make this div's length longer -->
+            <h4><center>Options</center></h4>
+            <ul>
+                <li><input type="button" id="undoBtn" onclick="undo()" value="Undo Move" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
+                <li><input type="button" id="colourBtn" onclick="changeBoard()" value="Change Board" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
+                <li><input type="button" id="sizeBtn" onclick="resize()" value="Larger Board" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
+                <li><input type="button" id="resetLookBtn" onclick="resetGraphics()" value="Reset Graphics" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
+                <li><input type="button" id="borderBtn" onclick="borders()" value="Borders On/Off" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
+                <li><input type="button" id="spaceBtn" onclick="spacing()" value="Change Cellspacing" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
+                <li><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
+                <li><input type="button" id="Btn" onclick="" value="Placeholder" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
+            <!-- Move Placeholder to top, change to 'Start Game', change font colour to red, remove 'Begin Battle' -->
+            </ul>
+        </div>
+        <div id="main">
+            <p>BBC is an open source interactive chess GUI that is meant to be a substitute for chess sets.</p>
+            <p>BBC does not use a chess engine, so you cannot play against the computer.<br> There are no constraints and rule checking &mdash; <b>constraints and rules are to be enforced by the players</b> just like in an actual game. This means that the players have to call check, mate, and make sure no illegal moves are played.</p>
+            <p>To learn more about this project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a><br>If you liked this, check out a more complex chess project of mine: <a href="http://code.google.com/p/divs/">DIVS</a></p>
+        <!-- Board will be visible from start but not the pieces. 'Begin Battle' will make pieces fade in on board (and possibly remove welcome msg) -->
+            <button class="start" style="color: #fff; padding: 2px 5px; border: 2px solid; border-color: #7bf #07c #07c #7bf; background-color: #09f; font-family: Georgia, ..., serif; font-size: 18px; display: block; height: 30px; width: 250px;">Begin Battle</button>
+        </div>
+        <div id="game"> <!-- Initial board setup -->
+        <table id="board" cellspacing="0" border="5" style="font-size:25px; cursor:hand;">
+        <tr>
+        <!-- <td onmouseover="this.style.background='red';this.style.cursor='pointer'"onmouseout="this.style.background='white';" onclick="alert('bang')">Test</td> -->
+            <td id="a8" align="center" width=35 height=38 onclick="pick(id)"><!--font size="5"-->&#9820;</td>
+            <td id="b8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9822;</td>
+            <td id="c8" align="center" width=35 height=38 onclick="pick(id)">&#9821;</td>
+            <td id="d8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9819;</td>
+            <td id="e8" align="center" width=35 height=38 onclick="pick(id)">&#9818;</td>
+            <td id="f8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9821;</td>
+            <td id="g8" align="center" width=35 height=38 onclick="pick(id)">&#9822;</td>
+            <td id="h8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9820;</td>
+        </tr>
+        <tr>
+            <td id="a7" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9823;</td>
+            <td id="b7" align="center" width=35 height=38 onclick="pick(id)">&#9823;</td>
+            <td id="c7" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9823;</td>
+            <td id="d7" align="center" width=35 height=38 onclick="pick(id)">&#9823;</td>
+            <td id="e7" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9823;</td>
+            <td id="f7" align="center" width=35 height=38 onclick="pick(id)">&#9823;</td>
+            <td id="g7" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9823;</td>
+            <td id="h7" align="center" width=35 height=38 onclick="pick(id)">&#9823;</td>
+        </tr>
+        <tr>
+            <td id="a6" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="b6" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="c6" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="d6" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="e6" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="f6" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="g6" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="h6" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+        </tr>
+        <tr>
+            <td id="a5" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="b5" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="c5" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="d5" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="e5" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="f5" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="g5" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="h5" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+        </tr>
+        <tr>
+            <td id="a4" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="b4" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="c4" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="d4" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="e4" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="f4" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="g4" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="h4" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+        </tr>
+        <tr>
+            <td id="a3" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="b3" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="c3" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="d3" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="e3" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="f3" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="g3" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="h3" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+        </tr>
+        <tr>
+            <td id="a2" align="center" width=35 height=38 onclick="pick(id)">&#9817;</td>
+            <td id="b2" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9817;</td>
+            <td id="c2" align="center" width=35 height=38 onclick="pick(id)">&#9817;</td>
+            <td id="d2" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9817;</td>
+            <td id="e2" align="center" width=35 height=38 onclick="pick(id)">&#9817;</td>
+            <td id="f2" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9817;</td>
+            <td id="g2" align="center" width=35 height=38 onclick="pick(id)">&#9817;</td>
+            <td id="h2" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9817;</td>
+        </tr>
+        <tr>
+            <td id="a1" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9814;</td>
+            <td id="b1" align="center" width=35 height=38 onclick="pick(id)">&#9816;</td>
+            <td id="c1" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9815;</td>
+            <td id="d1" align="center" width=35 height=38 onclick="pick(id)">&#9813;</td>
+            <td id="e1" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9812;</td>
+            <td id="f1" align="center" width=35 height=38 onclick="pick(id)">&#9815;</td>
+            <td id="g1" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9816;</td>
+            <td id="h1" align="center" width=35 height=38 onclick="pick(id)">&#9814;</td>
+        </tr>
+        </table>
 <!-- obsolete code: table of options
     <br />
     <table id="options">
@@ -480,33 +509,6 @@
     table.createCaption().innerHTML="Options";
     </script>
 -->
-    </div>
-
-    <!-- Michael Meadhra from TechRepublic wrote a great guide for centred layouts (http://search.techrepublic.com.com/search/Michael%20Meadhra.html) -->
-    <div id="outer">
-        <div id="header">
-            <h2 style="color: #09f;">Basic Browser Chess (BBC)</h2>
-        </div>
-        <div id="options"> <!-- TODO: possibly remove <li> and make this div's length longer -->
-            <h4><center>Options</center></h4>
-            <ul>
-                <li><input type="button" id="undoBtn" onclick="undo()" value="Undo Move" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
-                <li><input type="button" id="colourBtn" onclick="changeBoard()" value="Change Board" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
-                <li><input type="button" id="sizeBtn" onclick="resize()" value="Larger Board" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
-                <li><input type="button" id="resetLookBtn" onclick="resetGraphics()" value="Reset Graphics" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
-                <li><input type="button" id="borderBtn" onclick="borders()" value="Borders On/Off" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
-                <li><input type="button" id="spaceBtn" onclick="spacing()" value="Change Cellspacing" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
-                <li><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
-                <li><input type="button" id="Btn" onclick="" value="Placeholder" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
-            <!-- Move Placeholder to top, change to 'Start Game', change font colour to red, remove 'Begin Battle' -->
-            </ul>
-        </div>
-        <div id="main">
-            <p>BBC is an open source interactive chess GUI that is meant to be a substitute for chess sets.</p>
-            <p>BBC does not use a chess engine, so you cannot play against the computer.<br> There are no constraints and rule checking &mdash; <b>constraints and rules are to be enforced by the players</b> just like in an actual game. This means that the players have to call check, mate, and make sure no illegal moves are played.</p>
-            <p>To learn more about this project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a><br>If you liked this, check out a more complex chess project of mine: <a href="http://code.google.com/p/divs/">DIVS</a></p>
-        <!-- Board will be visible from start but not the pieces. 'Begin Battle' will make pieces fade in on board (and possibly remove welcome msg) -->
-            <button class="start" style="color: #fff; padding: 2px 5px; border: 2px solid; border-color: #7bf #07c #07c #7bf; background-color: #09f; font-family: Georgia, ..., serif; font-size: 18px; display: block; height: 30px; width: 250px;">Begin Battle</button>
         </div>
         <div id="footer">
             <p><a href="http://www.gnu.org/licenses/gpl.html" target="_blank"><img src="http://www.gnu.org/graphics/gplv3-127x51.png" border="0" alt="General Public License v3"/></a>
