@@ -507,8 +507,8 @@
 -->
         </div>
         <div id="footer">
-            <p><a href="http://www.gnu.org/licenses/gpl.html" target="_blank"><img src="http://www.gnu.org/graphics/gplv3-127x51.png" border="0" alt="General Public License v3"/></a>
-            Copyright (C) 2010  Dennis M.C. Ideler (ideler@acm.org)</p>
+            <a href="http://www.gnu.org/licenses/gpl.html" target="_blank"><img src="images/gplv3-127x51.png" border="0" alt="General Public License v3"/></a>
+            Copyright (C) <script type="text/javascript"> var date = new Date(); document.write(date.getFullYear());</script> Dennis M.C. Ideler (ideler@acm.org)
         </div>
     </div>
 </body>
