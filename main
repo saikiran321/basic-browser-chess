@@ -57,7 +57,7 @@
         padding: 10px;
     }
     div#game {
-	margin-left: 35%;
+        margin-left: 35%;
         margin-top: 1px;
         padding: 10px;
     }
@@ -73,19 +73,12 @@
     <script type="text/javascript">
     $(document).ready(function()
     {
-       // $("#game").hide();
-        $("#startBtn").click(function()
+        $("#hideBtn").click(function()
         {
-            $("#main").fadeOut(1000,function(){ $("#game").fadeIn(1000); });
-            //$("#main").slideUp("normal",function()
-            //{
-            //    $("#game").slideDown();
-            //});
+            $("#main").fadeOut(1000);
         });
     });
     </script>
-
-    <!--script type="text/javascript" src="selection.js"></script-->
 
     <script type="text/javascript"> 	// for more on style objects: w3schools.com/jsref/dom_obj_style.asp
     var pickNum = 1; // a move consists of 2 picks (first square, second square). thus a turn consists of 4 picks (1 move per player).
@@ -306,7 +299,7 @@
     </script>
 
     <script type="text/javascript">
-    var colourBoard=new Boolean(false);
+    var colourBoard=false; //NOTE: 'new Boolean(false)' caused a boolean bug - after inverting, it would stay as false the first time
     function changeBoard() // see more shades at www.december.com/html/spec/colorshades.html
     {
     // NOTE: might be easier to use jQuery's :even and :odd selectors
@@ -340,10 +333,10 @@
                         if(j&1) board.rows[i].cells[j].style.backgroundColor="lightgrey";
                         else board.rows[i].cells[j].style.backgroundColor="white";
                     }
-                }	
+                }
             }
         }
-        colourBoard=!colourBoard; //FIXME: does not change to true after first change...
+        colourBoard=!colourBoard;
     }
     </script>
 
@@ -369,14 +362,14 @@
         <div id="options"> <!-- TODO: possibly remove <li> and make this div's length longer -->
             <h4><center>Options</center></h4>
             <ul>
-                <li><input type="button" id="startBtn" onclick="" value="Start Game" style="color: black; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
-                <li><input type="button" id="undoBtn" onclick="undo()" value="Undo Move" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
-                <li><input type="button" id="colourBtn" onclick="changeBoard()" value="Change Board" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
+                <li><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
+                <li><input type="button" id="hideBtn" onclick="" value="Hide Text" style="color: black; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
+                <li><input type="button" id="undoBtn" onclick="undo()" value="Undo Move" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
+                <li><input type="button" id="colourBtn" onclick="changeBoard()" value="Change Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px;"></li> 
                 <li><input type="button" id="sizeBtn" onclick="resize()" value="Larger Board" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
                 <li><input type="button" id="resetLookBtn" onclick="resetGraphics()" value="Reset Graphics" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
                 <li><input type="button" id="borderBtn" onclick="borders()" value="Borders On/Off" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
                 <li><input type="button" id="spaceBtn" onclick="spacing()" value="Change Cellspacing" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
-                <li><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
             <!-- Move Placeholder to top, change to 'Start Game', change font colour to red, remove 'Begin Battle' -->
             </ul>
         </div>
@@ -389,7 +382,7 @@
         <div id="game"> <!-- Initial board setup -->
         <table id="board" cellspacing="0" border="5" style="font-size:25px; cursor:hand;">
         <tr>
-        <!-- <td onmouseover="this.style.background='red';this.style.cursor='pointer'"onmouseout="this.style.background='white';" onclick="alert('bang')">Test</td> -->
+        <!-- <td onmouseover="this.style.background='red';this.style.cursor='pointer'"onmouseout="this.style.background='white';" onclick="alert('test')">Test</td> -->
             <td id="a8" title="a8" align="center" width=35 height=38 onclick="pick(id)"><!--font size="5"-->&#9820;</td>
             <td id="b8" title="b8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9822;</td>
             <td id="c8" title="c8" align="center" width=35 height=38 onclick="pick(id)">&#9821;</td>
@@ -508,7 +501,7 @@
         </div>
         <div id="footer">
             <a href="http://www.gnu.org/licenses/gpl.html" target="_blank"><img src="images/gplv3-127x51.png" border="0" alt="General Public License v3"/></a>
-            Copyright (C) <script type="text/javascript"> var date = new Date(); document.write(date.getFullYear());</script> Dennis M.C. Ideler (ideler@acm.org)
+            Copyright (C) <script type="text/javascript"> var date = new Date(); document.write(date.getFullYear());</script> Dennis M.C. Ideler (ideler at acm.org)
         </div>
     </div>
 </body>
