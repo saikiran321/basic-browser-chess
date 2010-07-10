@@ -18,7 +18,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!-- TODO: Get rid of globals! -->
+<!-- TODO: Clean up globals! create global object 'var Globals = {}; Globals.a=""; Globals.b=2; etc' -->
 <html>
 <head>
     <title>Basic Browser Chess - BBC</title>
@@ -51,9 +51,9 @@
         margin-top: 1px;
         float: left;
     }
-    div#main {
-        margin-left: 30%;
-        margin-top: 1px;
+    div#intro {
+        margin-left: 20%;
+        margin-top: 1px; <!-- TODO possibly remove top margin and padding, add right margin -->
         padding: 10px;
     }
     div#game {
@@ -66,21 +66,38 @@
         margin: 0px;
         border-top: thin solid #000000;
     }
+    table#board td {
+		border: none;
+	}
     </style> <!-- TODO fix padding for large and small board (and for header) -->
 
     <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
 
-    <script type="text/javascript">
+    <script type="text/javascript"> //TODO should all button functionality be in this one javascript? neater
     $(document).ready(function()
     {
         $("#hideBtn").click(function()
         {
-            $("#main").fadeOut(1000);
+            $("#intro").fadeOut(1000, function()
+            {
+                $("#hideBtn").val("Show Text");
+                $("#hideBtn").attr("id","showBtn");
+            });
+        });
+        
+        $('#showBtn').click(function() //FIXME doesn't execute - make function for it?
+        {
+			alert('Handler for .click() called.');
+            //$('#intro').fadeIn(1000, function()
+            //{
+            //    $('#showBtn').val("Hide Text");
+            //    $('#showBtn').attr('id','hideBtn');
+            //});
         });
     });
     </script>
 
-    <script type="text/javascript"> 	// for more on style objects: w3schools.com/jsref/dom_obj_style.asp
+    <script type="text/javascript"> // for more on style objects: w3schools.com/jsref/dom_obj_style.asp
     var pickNum = 1; // a move consists of 2 picks (first square, second square). thus a turn consists of 4 picks (1 move per player).
     var oldSquare="";
     var oldColour;
@@ -187,7 +204,7 @@
             $("#board").css({"font-size":"25px"});
             $('#board td').attr('width', 35);
             $('#board td').attr('height', 38);
-            document.getElementById('sizeBtn').value="Larger Board"
+            document.getElementById('sizeBtn').value="Larger Board";
             bigSize=false;
         }
         else // then make big
@@ -215,7 +232,7 @@
 
     <script type="text/javascript"> //FIXME function not reached if placed in js files
     var origSize; // border size before it's changed
-    function borders()
+    function outerBorders()
     {
         var borderSize = $('#board').attr('border');
         if (borderSize != 0) // remove borders
@@ -228,6 +245,14 @@
             $('#board').attr('border',origSize);
         }
     }
+    </script>
+    
+    <script type="text/javascript"> // http://www.w3.org/TR/CSS2/tables.html#table-border-styles
+    function innerBorders() // switch between all border styles
+    {
+		// place all options in an array
+		// http://api.jquery.com/css/
+	}
     </script>
 
     <script type="text/javascript">
@@ -362,18 +387,19 @@
         <div id="options"> <!-- TODO: possibly remove <li> and make this div's length longer -->
             <h4><center>Options</center></h4>
             <ul>
-                <li><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
-                <li><input type="button" id="hideBtn" onclick="" value="Hide Text" style="color: black; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
+                <li><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
+                <li><input type="button" id="hideBtn" onclick="" value="Hide Text" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
                 <li><input type="button" id="undoBtn" onclick="undo()" value="Undo Move" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
-                <li><input type="button" id="colourBtn" onclick="changeBoard()" value="Change Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px;"></li> 
-                <li><input type="button" id="sizeBtn" onclick="resize()" value="Larger Board" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li> 
-                <li><input type="button" id="resetLookBtn" onclick="resetGraphics()" value="Reset Graphics" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
-                <li><input type="button" id="borderBtn" onclick="borders()" value="Borders On/Off" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
-                <li><input type="button" id="spaceBtn" onclick="spacing()" value="Change Cellspacing" style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></li>
+                <li><input type="button" id="colourBtn" onclick="changeBoard()" value="Change Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
+                <li><input type="button" id="sizeBtn" onclick="resize()" value="Larger Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
+                <li><input type="button" id="resetLookBtn" onclick="resetGraphics()" value="Reset Graphics" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
+                <li><input type="button" id="outerBorderBtn" onclick="outerBorders()" value="Outer Border" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
+                <li><input type="button" id="innerBorderBtn" onclick="innerBorders()" value="Inner Borders" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
+                <li><input type="button" id="spaceBtn" onclick="spacing()" value="Change Cellspacing" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
             <!-- Move Placeholder to top, change to 'Start Game', change font colour to red, remove 'Begin Battle' -->
             </ul>
         </div>
-        <div id="main">
+        <div id="intro">
             <p>BBC is an open source interactive chess GUI that is meant to be a substitute for chess sets.</p>
             <p>BBC does not use a chess engine, so you cannot play against the computer.<br> There are no constraints and rule checking &mdash; <b>constraints and rules are to be enforced by the players</b> just like in an actual game. This means that the players have to call check, mate, and make sure no illegal moves are played.</p>
             <p>To learn more about this project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a><br>If you liked this, check out a more complex chess project of mine: <a href="http://code.google.com/p/divs/">DIVS</a></p>
@@ -463,45 +489,10 @@
             <td id="h1" title="h1" align="center" width=35 height=38 onclick="pick(id)">&#9814;</td>
         </tr>
         </table>
-<!-- obsolete code: table of options
-    <br />
-    <table id="options">
-    <tr>
-        <td><input type="button" id="undoBtn" onclick="undo()" value="Undo Move"
-            style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></td>
-        <td><input type="button" id="colourBtn" onclick="changeBoard()" value="Change Board"
-            style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></td>
-    </tr>
-    <tr>
-        <td><input type="button" id="sizeBtn" onclick="resize()" value="Larger Board"
-            style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></td>
-        <td><input type="button" id="resetLookBtn" onclick="resetGraphics()" value="Reset Graphics"
-            style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></td>
-    </tr>
-    <tr>
-        <td><input type="button" id="borderBtn" onclick="borders()" value="Borders On/Off"
-            style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></td>
-        <td><input type="button" id="spaceBtn" onclick="spacing()" value="Change Cellspacing"
-            style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></td>
-    </tr>
-    <tr>
-        <td><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game"
-            style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></td>
-        <td><input type="button" id="Btn" onclick="" value="Placeholder"
-            style="color: #fff; font-size: 12px; background-color: #09f; height: 30px; width: 150px;"></td>
-    </tr>
-    </table>
-
-    <script type="text/javascript">
-    var table=document.getElementById('options');
-    table.frame="above";
-    table.createCaption().innerHTML="Options";
-    </script>
--->
         </div>
         <div id="footer">
-            <a href="http://www.gnu.org/licenses/gpl.html" target="_blank"><img src="images/gplv3-127x51.png" border="0" alt="General Public License v3"/></a>
-            Copyright (C) <script type="text/javascript"> var date = new Date(); document.write(date.getFullYear());</script> Dennis M.C. Ideler (ideler at acm.org)
+            <a href="http://www.gnu.org/licenses/gpl.html" target="_blank"><img src="images/gplv3-88x31.png" border="0" alt="General Public License v3"/></a>
+            Copyright &copy; <script type="text/javascript"> var date = new Date(); document.write(date.getFullYear());</script> Dennis M.C. Ideler (ideler at acm.org)
         </div>
     </div>
 </body>
