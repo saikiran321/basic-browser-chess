@@ -1,0 +1,9 @@
+#summary One-sentence summary of this page.
+#labels Featured
+
+= Frequently Asked Questions =
+(Actually I haven't been asked these questions yet, but I covered them so they don't become frequently asked questions)
+
+===Why a .org domain name?===
+Domains ending with .org tend to be used for nonprofits; personal sites; open-source projects; and sometimes by commercial entities.
+See http://en.wikipedia.org/wiki/.org#Example_use
