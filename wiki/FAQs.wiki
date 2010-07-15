@@ -1,8 +1,7 @@
-#summary Q&A
+#summary Frequently Asked Questions
 #labels Featured
 
-= Frequently Asked Questions =
-(Actually I haven't been asked these questions yet, but I covered them so they don't become frequently asked questions)
+To be honest, I haven't been asked these questions yet, but I covered them so they don't become frequently asked questions.
 
 ===Why a .org domain name?===
 Domains ending with .org tend to be used for nonprofits; personal sites; open-source projects; and sometimes by commercial entities.
