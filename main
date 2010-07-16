@@ -75,7 +75,9 @@
 
     <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
 
-    <script type="text/javascript"> //TODO should all button functionality be in this one javascript? neater
+    <script type="text/javascript"> //FIXME more efficient to place this code outside doc.ready
+    var Global = {}; // TODO place all board properties (i.e. current globals) in here
+    
     $(document).ready(function()
     {
         $("#hideBtn").click(function()
