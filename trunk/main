@@ -46,18 +46,19 @@
         text-align: center;
     }
     div#options {
-        width: 25%;
+        width: 23%; <!-- originally 25% -->
         padding: 10px;
         margin-top: 1px;
         float: left;
     }
     div#intro {
         margin-left: 20%;
+        margin-right: 20%;
         margin-top: 1px; <!-- TODO possibly remove top margin and padding, add right margin -->
         padding: 10px;
     }
     div#game {
-        margin-left: 35%;
+        margin-left: 35%; <!-- TODO 34% is a bit more centred? -->
         margin-top: 1px;
         padding: 10px;
     }
@@ -69,6 +70,7 @@
     table#board td {
 		border: none;
 	}
+	<!-- TODO style the board in css section (eg colour, width, height), not in table section -->
     </style> <!-- TODO fix padding for large and small board (and for header) -->
 
     <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
@@ -247,7 +249,7 @@
     }
     </script>
     
-    <script type="text/javascript"> // http://www.w3.org/TR/CSS2/tables.html#table-border-styles
+    <script type="text/javascript"> //TODO http://www.w3.org/TR/CSS2/tables.html#table-border-styles
     function innerBorders() // switch between all border styles
     {
 		// place all options in an array
@@ -324,10 +326,11 @@
     </script>
 
     <script type="text/javascript">
-    var colourBoard=false; //NOTE: 'new Boolean(false)' caused a boolean bug - after inverting, it would stay as false the first time
-    function changeBoard() // see more shades at www.december.com/html/spec/colorshades.html
+    var colourBoard=false;
+    function changeBoard() // more shades at www.december.com/html/spec/colorshades.html
     {
-    // NOTE: might be easier to use jQuery's :even and :odd selectors
+    //TODO might be easier to use jQuery's :even and :odd selectors
+    //eg: $('#board td:even').css("background-color", "#bbbbff")
         var board=document.getElementById('board');
         for (var i=0; i < 8; i++)
         {
@@ -361,6 +364,11 @@
                 }
             }
         }
+        
+        var square = $("#"+oldSquare); // these 3 lines prevent the post-highlighting bug
+        oldColour = square.css("background-color"); // update to prevent showing the old colour
+        square.css("background-color","yellow"); // re-highlight the selected square
+        
         colourBoard=!colourBoard;
     }
     </script>
@@ -384,7 +392,7 @@
         <div id="header">
             <h2 style="color: #09f;">Basic Browser Chess (BBC)</h2>
         </div>
-        <div id="options"> <!-- TODO: possibly remove <li> and make this div's length longer -->
+        <div id="options">
             <h4><center>Options</center></h4>
             <ul>
                 <li><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
@@ -396,7 +404,6 @@
                 <li><input type="button" id="outerBorderBtn" onclick="outerBorders()" value="Outer Border" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
                 <li><input type="button" id="innerBorderBtn" onclick="innerBorders()" value="Inner Borders" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
                 <li><input type="button" id="spaceBtn" onclick="spacing()" value="Change Cellspacing" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
-            <!-- Move Placeholder to top, change to 'Start Game', change font colour to red, remove 'Begin Battle' -->
             </ul>
         </div>
         <div id="intro">
@@ -490,7 +497,7 @@
         </tr>
         </table>
         </div>
-        <div id="footer">
+        <div id="footer"> <!-- TODO link my name to my portfolio (google site) -->
             <a href="http://www.gnu.org/licenses/gpl.html" target="_blank"><img src="images/gplv3-88x31.png" border="0" alt="General Public License v3"/></a>
             Copyright &copy; <script type="text/javascript"> var date = new Date(); document.write(date.getFullYear());</script> Dennis M.C. Ideler (ideler at acm.org)
         </div>
