@@ -18,7 +18,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!-- TODO: Clean up globals! create global object 'var Globals = {}; Globals.a=""; Globals.b=2; etc' -->
 <html>
 <head>
     <title>Basic Browser Chess - BBC</title>
@@ -75,30 +74,35 @@
 
     <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
 
-    <script type="text/javascript"> //FIXME more efficient to place this code outside doc.ready
-    var Global = {}; // TODO place all board properties (i.e. current globals) in here
+
+    <script type="text/javascript">
+    var Global = {};
+    //TODO: Clean up globals (eliminate as many as possible first)
+    //      var Globals = {}; Globals.a=""; Globals.b=2; etc...
+    </script>
     
-    $(document).ready(function()
+    <script type="text/javascript">
+    var msgHidden=false;
+    function introMsg()
     {
-        $("#hideBtn").click(function()
+        if(msgHidden==false)
         {
             $("#intro").fadeOut(1000, function()
             {
                 $("#hideBtn").val("Show Text");
                 $("#hideBtn").attr("id","showBtn");
             });
-        });
-        
-        $('#showBtn').click(function() //FIXME doesn't execute - make function for it?
+            msgHidden=true;
+        } else
         {
-			alert('Handler for .click() called.');
-            //$('#intro').fadeIn(1000, function()
-            //{
-            //    $('#showBtn').val("Hide Text");
-            //    $('#showBtn').attr('id','hideBtn');
-            //});
-        });
-    });
+            $('#intro').fadeIn(1000, function()
+            {
+                $('#showBtn').val("Hide Text");
+                $('#showBtn').attr('id','hideBtn');
+            });
+            msgHidden=false;
+        }
+	}
     </script>
 
     <script type="text/javascript"> // for more on style objects: w3schools.com/jsref/dom_obj_style.asp
@@ -234,7 +238,7 @@
     }
     </script>
 
-    <script type="text/javascript"> //FIXME function not reached if placed in js files
+    <script type="text/javascript">
     var origSize; // border size before it's changed
     function outerBorders()
     {
@@ -275,7 +279,7 @@
     </script>
 
     <script type="text/javascript">
-    function resetGame() // put this function in initBoard.js file
+    function resetGame()
     {
         var board=document.getElementById('board');
 
@@ -398,7 +402,7 @@
             <h4><center>Options</center></h4>
             <ul>
                 <li><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
-                <li><input type="button" id="hideBtn" onclick="" value="Hide Text" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
+                <li><input type="button" id="hideBtn" onclick="introMsg()" value="Hide Text" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
                 <li><input type="button" id="undoBtn" onclick="undo()" value="Undo Move" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
                 <li><input type="button" id="colourBtn" onclick="changeBoard()" value="Change Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
                 <li><input type="button" id="sizeBtn" onclick="resize()" value="Larger Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
