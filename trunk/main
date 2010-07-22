@@ -161,13 +161,18 @@
 
         undoBtn.disabled=false;
 
-        // check for pawn promotion (put in separate js file)
-        // FIXME: cannot check piece type! try .innerText, but only works in IE? what about .value?
-        if(piece == "&#9823") // black pawn
+        // check for pawn promotion
+        promotePawn(piece, to);
+    }
+    </script>
+    
+    <script type="text/javascript">
+    function promotePawn(piece, to)
+    {
+        if(piece.charCodeAt(0) == "9823") // check if unicode of character matches that of a black pawn
         {
-            alert($("#"+to).html());
-            switch(to)
-            { // promote black pawn if it reaches white's back rank
+            switch(to) // promote black pawn if it reaches white's back rank
+            {
             case 'a1':
             case 'b1':
             case 'c1':
@@ -176,7 +181,7 @@
             case 'f1':
             case 'g1':
             case 'h1':
-                var promotion=prompt("Promote to:","Q=Queen, R=Rook, N=Knight")
+                var promotion=prompt("Promote to:","Q=Queen, R=Rook, N=Knight");
                 break;
             default:
                 return;
@@ -185,18 +190,65 @@
             {
             case 'Q':
             case 'q':
-                document.getElementById(to).innerHTML='&#9819';
+                document.getElementById(to).innerHTML='&#9819;';
                 break;
             case 'R':
             case 'r':
+                document.getElementById(to).innerHTML='&#9820;';
                 break;
             case 'N':
             case 'n':
+                document.getElementById(to).innerHTML='&#9822;';
+                break;
+            default:
+                document.getElementById(to).innerHTML='&#9819;'; // default is Queen
+                return;
+            }
+        }
+        else if(piece.charCodeAt(0) == "9817") // check if white pawn is eligible for promotion
+        {
+            switch(to)
+            {
+            case 'a8':
+            case 'b8':
+            case 'c8':
+            case 'd8':
+            case 'e8':
+            case 'f8':
+            case 'g8':
+            case 'h8':
+                var promotion=prompt("Promote to:","Q=Queen, R=Rook, N=Knight");
                 break;
             default:
                 return;
             }
+            switch(promotion)
+            {
+            case 'Q':
+            case 'q':
+                document.getElementById(to).innerHTML='&#9813;';
+                break;
+            case 'R':
+            case 'r':
+                document.getElementById(to).innerHTML='&#9814;';
+                break;
+            case 'N':
+            case 'n':
+                document.getElementById(to).innerHTML='&#9816;';
+                break;
+            default:
+                document.getElementById(to).innerHTML='&#9813;'; // default is Queen
+                return;
+            }
         }
+    }
+    </script>
+    
+    <script type="text/javascript">
+    // Converts a chess piece to its numeric character reference (NCR)
+    function convertToNCR(str)
+    {
+        return '&#' + str.charCodeAt(0) + ';'; // add prefix & suffix to dec value
     }
     </script>
 
