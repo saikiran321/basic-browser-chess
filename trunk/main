@@ -557,7 +557,11 @@
         </div>
         <div id="footer"> <!-- TODO link my name to my portfolio (google site) -->
             <a href="http://www.gnu.org/licenses/gpl.html" target="_blank"><img src="images/gplv3-88x31.png" border="0" alt="General Public License v3"/></a>
-            Copyright &copy; <script type="text/javascript"> var date = new Date(); document.write(date.getFullYear());</script> Dennis M.C. Ideler (ideler at acm.org)
+            Copyright &copy; <script type="text/javascript"> var date = new Date(); document.write(date.getFullYear());</script> Dennis M.C. Ideler (
+            <a href="http://www.google.com/recaptcha/mailhide/d?k=01xb4CHcW0WAJkxaSdlS-pIQ==&amp;c=s4d8GEf0Sz-qgtbGJNNd6g==" 
+            onclick="window.open('http://www.google.com/recaptcha/mailhide/d?k\07501xb4CHcW0WAJkxaSdlS-pIQ\75\75\46c\75s4d8GEf0Sz-qgtbGJNNd6g\75\075', '', 
+            'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;" title="Reveal this e-mail address">...</a>
+            @acm.org)
         </div>
     </div>
 </body>
