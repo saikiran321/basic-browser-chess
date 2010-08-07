@@ -55,6 +55,7 @@
         margin-right: 20%;
         margin-top: 1px; <!-- TODO possibly remove top margin and padding, add right margin -->
         padding: 10px;
+        display: none;
     }
     div#game {
         margin-left: 35%; <!-- TODO 34% is a bit more centred? -->
@@ -67,76 +68,87 @@
         border-top: thin solid #000000;
     }
     table#board td {
-		border: none;
-	}
+        border: none;
+    }
+    noscript {
+        margin-left: 5%;
+        font-size: 18px;
+        color: red;
+    }
 	<!-- TODO style the board in css section (eg colour, width, height), not in table section -->
     </style> <!-- TODO fix padding for large and small board (and for header) -->
 
     <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
 
-
     <script type="text/javascript">
     var Global = {};
     //TODO: Clean up globals (eliminate as many as possible first)
-    //      var Globals = {}; Globals.a=""; Globals.b=2; etc...
+    //		Then try to pass as many as possible!
+    Global.msgVisible=false;
+    Global.pickNum=1; // a move consists of 2 picks (1st square, 2nd square), a turn consists of 4 picks (1 move per player)
+    Global.oldSquare="";
+    Global.oldColour="";
+    Global.fromPiece="";
+    Global.toPiece="";
+    Global.fromSquare="";
+    Global.toSquare="";
+    Global.bigSize=false; //new Boolean(false);
+    Global.space=1;
+    Global.origSize=""; // border size before it's modified
+    Global.colourBoard=false;
     </script>
     
     <script type="text/javascript">
-    var msgHidden=false;
     function introMsg()
     {
-        if(msgHidden==false)
+        if(Global.msgVisible==false) // show msg if hidden
         {
-            $("#intro").fadeOut(1000, function()
+            $("#intro").fadeIn("fast", function()
             {
-                $("#hideBtn").val("Show Text");
+                $("#hideBtn").val("Hide Intro");
                 $("#hideBtn").attr("id","showBtn");
             });
-            msgHidden=true;
+            Global.msgVisible=true;
         } else
         {
-            $('#intro').fadeIn(1000, function()
+            $('#intro').fadeOut("fast", function()
             {
-                $('#showBtn').val("Hide Text");
+                $('#showBtn').val("Show Intro");
                 $('#showBtn').attr('id','hideBtn');
             });
-            msgHidden=false;
+            Global.msgVisible=false;
         }
 	}
     </script>
 
     <script type="text/javascript"> // for more on style objects: w3schools.com/jsref/dom_obj_style.asp
-    var pickNum = 1; // a move consists of 2 picks (first square, second square). thus a turn consists of 4 picks (1 move per player).
-    var oldSquare="";
-    var oldColour;
     function pick(id) // The Picking method uses cell ids (preferred because it works regardless of board size)
     {
-        if(oldSquare == id) return; // if same square clicked, do nothing
-        if(pickNum==1 || pickNum==3) undoBtn.disabled=true; // disable undo if turn not over
+        if(Global.oldSquare == id) return; // if same square clicked, do nothing
+        if(Global.pickNum==1 || Global.pickNum==3) undoBtn.disabled=true; // disable undo if turn not over
         // using DOM: document.getElementById("undoBtn").disabled=true;
         var square = document.getElementById(id);
-        if(oldSquare!="") // if not the initial pick
-            $("#"+oldSquare).css("background-color",oldColour); // restore the rgb value
+        if(Global.oldSquare!="") // if not the initial pick
+            $("#"+Global.oldSquare).css("background-color",Global.oldColour); // restore the rgb value
             
-        oldColour = $("#"+id).css("background-color"); // retrieve the rgb value of new square to restore it after highlight
+        Global.oldColour = $("#"+id).css("background-color"); // retrieve the rgb value of new square to restore it after highlight
 
         square.style.backgroundColor="yellow"; // highlight the selected square
 
-        //alert(pickNum);
-        if(pickNum==2 || pickNum==4)
-            movePiece(oldSquare, id);
+        //alert(Global.pickNum);
+        if(Global.pickNum==2 || Global.pickNum==4)
+            movePiece(Global.oldSquare, id);
 
-        pickNum++; // increment for next turn
-        pickNum%=5;
-        if(pickNum==0)
-            pickNum=1; // instead of having turns as 0-3, use 1-4 for clarity
+        Global.pickNum++; // increment for next turn
+        Global.pickNum%=5;
+        if(Global.pickNum==0)
+            Global.pickNum=1; // instead of having turns as 0-3, use 1-4 for clarity
 
-        oldSquare=id; // update the old square
+        Global.oldSquare=id; // update the old square
     }
     </script>
 
     <script type="text/javascript">
-    var fromPiece, toPiece, fromSquare, toSquare;
     function movePiece(from, to) // using DOM
     {
         var piece = document.getElementById(from).innerHTML;
@@ -145,15 +157,15 @@
 // issue #5
         if(piece == "&nbsp;") // if first square is empty, do not move
         {
-            pickNum--; // decrement to keep turn accurate
+            Global.pickNum--; // decrement to keep turn accurate
             return;
         }
 
         // assign data for the possibility to undo move
-        fromPiece=piece;
-        toPiece=document.getElementById(to).innerHTML;
-        fromSquare=from;
-        toSquare=to;
+        Global.fromPiece=piece;
+        Global.toPiece=document.getElementById(to).innerHTML;
+        Global.fromSquare=from;
+        Global.toSquare=to;
 
         // make the swap
         document.getElementById(to).innerHTML=piece;
@@ -181,7 +193,7 @@
             case 'f1':
             case 'g1':
             case 'h1':
-                var promotion=prompt("Promote to:","Q=Queen, R=Rook, N=Knight");
+                var promotion=prompt("Promote to:\n(default is Queen)","Q, R, N, or B");
                 break;
             default:
                 return;
@@ -199,6 +211,10 @@
             case 'N':
             case 'n':
                 document.getElementById(to).innerHTML='&#9822;';
+                break;
+            case 'B':
+            case 'b':
+                document.getElementById(to).innerHTML='&#9821;';            
                 break;
             default:
                 document.getElementById(to).innerHTML='&#9819;'; // default is Queen
@@ -236,6 +252,10 @@
             case 'n':
                 document.getElementById(to).innerHTML='&#9816;';
                 break;
+            case 'B':
+            case 'b':
+                document.getElementById(to).innerHTML='&#9815;';            
+                break;
             default:
                 document.getElementById(to).innerHTML='&#9813;'; // default is Queen
                 return;
@@ -253,11 +273,10 @@
     </script>
 
     <script type="text/javascript">
-    var bigSize=new Boolean(false);
     function resize()
     {
         var board = document.getElementById('board');
-        if(bigSize==true) // then make small
+        if(Global.bigSize==true) // then make small
         {   //NOTE: for some reason if(bigSize) doesn't work to test if true
             board.cellPadding=1; // decrease padding
             if ($('#board').attr('border')!=0) board.border=5; // decrease borders
@@ -265,44 +284,43 @@
             $('#board td').attr('width', 35);
             $('#board td').attr('height', 38);
             document.getElementById('sizeBtn').value="Larger Board";
-            bigSize=false;
+            Global.bigSize=false;
         }
         else // then make big
         {
             board.cellPadding=15; // increase padding
             if ($('#board').attr('border')!=0) board.border=15; // increase borders
-            $("#board").css({"font-size":"40px"});
-            $('#board td').attr('width', 58);
-            $('#board td').attr('height', 86);
+            $("#board").css({"font-size":"34px"});
+            $('#board td').attr('width', 38);
+            $('#board td').attr('height', 66);
             document.getElementById('sizeBtn').value="Smaller Board";
-            bigSize=true;
+            Global.bigSize=true;
         }
     }
     </script>
 
     <script type="text/javascript">
-    var space=1;
+//    var space=1;
     function spacing()
     {
-        document.getElementById('board').cellSpacing=space;
-        space++;
-        space%=3; // do not exceed size 2
+        document.getElementById('board').cellSpacing=Global.space;
+        Global.space++;
+        Global.space%=3; // do not exceed size 2
     }
     </script>
 
     <script type="text/javascript">
-    var origSize; // border size before it's changed
     function outerBorders()
     {
         var borderSize = $('#board').attr('border');
         if (borderSize != 0) // remove borders
         {
-            origSize = borderSize;
+            Global.origSize = borderSize;
             $('#board').attr('border','0');
         }
         else // restore borders
         {
-            $('#board').attr('border',origSize);
+            $('#board').attr('border',Global.origSize);
         }
     }
     </script>
@@ -326,7 +344,7 @@
         $('#board td').attr('width', 35);
         $('#board td').attr('height', 38);
         document.getElementById('sizeBtn').value="Larger Board"
-        bigSize=false;
+        Global.bigSize=false;
     }
     </script>
 
@@ -378,13 +396,12 @@
                 }
             }
         }
-        pickNum=1; // reset turn
-        $("#"+oldSquare).css("background-color",oldColour); // restore colour of last active square
+        Global.pickNum=1; // reset turn
+        $("#"+Global.oldSquare).css("background-color",Global.oldColour); // restore colour of last active square
     }
     </script>
 
     <script type="text/javascript">
-    var colourBoard=false;
     function changeBoard() // more shades at www.december.com/html/spec/colorshades.html
     {
     //TODO might be easier to use jQuery's :even and :odd selectors
@@ -396,7 +413,7 @@
             {
                 if(i&1)
                 {
-                    if(colourBoard==false)
+                    if(Global.colourBoard==false)
                     {
                         if(j&1) board.rows[i].cells[j].style.backgroundColor="#EED6AF"; // light
                         else board.rows[i].cells[j].style.backgroundColor="#A67D3D"; // dark
@@ -409,7 +426,7 @@
                 }
                 else
                 {
-                    if(colourBoard==false)
+                    if(Global.colourBoard==false)
                     {
                         if(j&1) board.rows[i].cells[j].style.backgroundColor="#A67D3D";
                         else board.rows[i].cells[j].style.backgroundColor="#EED6AF";
@@ -422,21 +439,25 @@
                 }
             }
         }
-        
-        var square = $("#"+oldSquare); // these 3 lines prevent the post-highlighting bug
-        oldColour = square.css("background-color"); // update to prevent showing the old colour
-        square.css("background-color","yellow"); // re-highlight the selected square
-        
-        colourBoard=!colourBoard;
+
+        // Prevent post-highlighting when changing board colours
+        if (Global.oldSquare!="") // if no move has been made yet, there has been no highlighting, so no worries
+        {
+			var square = $("#"+Global.oldSquare); // get the affected table cell
+			Global.oldColour = square.css("background-color"); // update to prevent showing the old colour
+			square.css("background-color","yellow"); // re-highlight the selected square
+		}
+
+        Global.colourBoard=!Global.colourBoard;
     }
     </script>
 
     <script type="text/javascript">
     function undo()
     {
-        document.getElementById(toSquare).innerHTML=toPiece;
-        document.getElementById(fromSquare).innerHTML=fromPiece;
-        $("#"+oldSquare).css("background-color",oldColour); // restore colour of last active square
+        document.getElementById(Global.toSquare).innerHTML=Global.toPiece;
+        document.getElementById(Global.fromSquare).innerHTML=Global.fromPiece;
+        $("#"+Global.oldSquare).css("background-color",Global.oldColour); // restore colour of last active square
         undoBtn.disabled=true; // disallow multiple undos
         // NOTE: might be better to use jQuery's :disabled selector
     }
@@ -454,7 +475,7 @@
             <h4><center>Options</center></h4>
             <ul>
                 <li><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
-                <li><input type="button" id="hideBtn" onclick="introMsg()" value="Hide Text" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
+                <li><input type="button" id="hideBtn" onclick="introMsg()" value="Show Intro" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
                 <li><input type="button" id="undoBtn" onclick="undo()" value="Undo Move" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
                 <li><input type="button" id="colourBtn" onclick="changeBoard()" value="Change Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
                 <li><input type="button" id="sizeBtn" onclick="resize()" value="Larger Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
@@ -464,10 +485,11 @@
                 <li><input type="button" id="spaceBtn" onclick="spacing()" value="Change Cellspacing" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
             </ul>
         </div>
+        <noscript>Note: Please enable client-side scripting to use BBC</noscript>
         <div id="intro">
             <p>BBC is an open source interactive chess GUI that is meant to be a substitute for chess sets.</p>
             <p>BBC does not use a chess engine, so you cannot play against the computer.<br> There are no constraints and rule checking &mdash; <b>constraints and rules are to be enforced by the players</b> just like in an actual game. This means that the players have to call check, mate, and make sure no illegal moves are played.</p>
-            <p>To learn more about this project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a><br>If you liked this, check out a more complex chess project of mine: <a href="http://code.google.com/p/divs/">DIVS</a></p>
+            <p>To learn more about this personal project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a><br>If you liked this, check out a more complex chess project of mine: <a href="http://code.google.com/p/divs/">DIVS</a></p>
             <!--button class="start" style="color: #fff; padding: 2px 5px; border: 2px solid; border-color: #7bf #07c #07c #7bf; background-color: #09f; font-family: Georgia, ..., serif; font-size: 18px; display: block; height: 30px; width: 250px;">Begin Battle</button-->
         </div>
         <div id="game"> <!-- Initial board setup -->
@@ -555,13 +577,13 @@
         </tr>
         </table>
         </div>
-        <div id="footer"> <!-- TODO link my name to my portfolio (google site) -->
+        <div id="footer">
             <a href="http://www.gnu.org/licenses/gpl.html" target="_blank"><img src="images/gplv3-88x31.png" border="0" alt="General Public License v3"/></a>
-            Copyright &copy; <script type="text/javascript"> var date = new Date(); document.write(date.getFullYear());</script> Dennis M.C. Ideler (
+            Copyright &copy; <script type="text/javascript"> var date = new Date(); document.write(date.getFullYear());</script>
+            <a href="https://sites.google.com/site/idelerdennis/home"> Dennis M.C. Ideler</a> (
             <a href="http://www.google.com/recaptcha/mailhide/d?k=01xb4CHcW0WAJkxaSdlS-pIQ==&amp;c=s4d8GEf0Sz-qgtbGJNNd6g==" 
             onclick="window.open('http://www.google.com/recaptcha/mailhide/d?k\07501xb4CHcW0WAJkxaSdlS-pIQ\75\75\46c\75s4d8GEf0Sz-qgtbGJNNd6g\75\075', '', 
-            'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;" title="Reveal this e-mail address">...</a>
-            @acm.org)
+            'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;" title="Reveal this e-mail address">id...er@acm.org</a> )
         </div>
     </div>
 </body>
