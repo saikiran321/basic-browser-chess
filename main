@@ -69,6 +69,7 @@
     }
     table#board td {
         border: none;
+        <!--border-style: outset;-->
     }
     noscript {
         margin-left: 5%;
@@ -96,6 +97,10 @@
     Global.space=1;
     Global.origSize=""; // border size before it's modified
     Global.colourBoard=false;
+    Global.moveLog=[ // example
+	['e2','e4'],
+    ['e7','e5']
+	]
     </script>
     
     <script type="text/javascript">
@@ -300,7 +305,6 @@
     </script>
 
     <script type="text/javascript">
-//    var space=1;
     function spacing()
     {
         document.getElementById('board').cellSpacing=Global.space;
@@ -323,14 +327,6 @@
             $('#board').attr('border',Global.origSize);
         }
     }
-    </script>
-    
-    <script type="text/javascript"> //TODO http://www.w3.org/TR/CSS2/tables.html#table-border-styles
-    function innerBorders() // switch between all border styles
-    {
-		// place all options in an array
-		// http://api.jquery.com/css/
-	}
     </script>
 
     <script type="text/javascript">
@@ -396,8 +392,10 @@
                 }
             }
         }
-        Global.pickNum=1; // reset turn
+
         $("#"+Global.oldSquare).css("background-color",Global.oldColour); // restore colour of last active square
+        Global.oldSquare="";  // reset turn
+        Global.pickNum=1; // ditto
     }
     </script>
 
@@ -453,13 +451,15 @@
     </script>
 
     <script type="text/javascript">
-    function undo()
+    function undo() //TODO movelog array to go back many steps
     {
         document.getElementById(Global.toSquare).innerHTML=Global.toPiece;
         document.getElementById(Global.fromSquare).innerHTML=Global.fromPiece;
         $("#"+Global.oldSquare).css("background-color",Global.oldColour); // restore colour of last active square
         undoBtn.disabled=true; // disallow multiple undos
         // NOTE: might be better to use jQuery's :disabled selector
+        alert(Global.moveLog[0]); // "e2,e4"
+        alert(Global.moveLog[0][0]); // "e2"
     }
     </script>
 
@@ -481,7 +481,6 @@
                 <li><input type="button" id="sizeBtn" onclick="resize()" value="Larger Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
                 <li><input type="button" id="resetLookBtn" onclick="resetGraphics()" value="Reset Graphics" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
                 <li><input type="button" id="outerBorderBtn" onclick="outerBorders()" value="Outer Border" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
-                <li><input type="button" id="innerBorderBtn" onclick="innerBorders()" value="Inner Borders" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
                 <li><input type="button" id="spaceBtn" onclick="spacing()" value="Change Cellspacing" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
             </ul>
         </div>
