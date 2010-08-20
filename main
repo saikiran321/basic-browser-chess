@@ -96,6 +96,7 @@
     Global.space=1;
     Global.origSize=""; // border size before it's modified
     Global.colourBoard=false;
+    Global.currBorder=0;
     Global.moveLog=[ // example
 	['e2','e4'],
     ['e7','e5']
@@ -463,11 +464,11 @@
     </script>
 
     <script type="text/javascript"> // www.w3.org/TR/CSS2/tables.html#table-border-styles
-	function innerBorders() // switch to outset style
+    function innerBorders() // switch to outset style
     {
-		var borders = ["none","dotted","dashed","solid","double","groove","ridge","inset","outset"];
-        $("td").css("border-style",borders[i]);
-        // http://api.jquery.com/css/
+        var borders = ["none","dotted","dashed","solid","double","groove","ridge","inset","outset"];
+        if(++Global.currBorder == 9) Global.currBorder = 0;
+        $("td").css("border-style",borders[Global.currBorder]);
     }
     </script>
 
@@ -510,7 +511,6 @@
             <p>BBC is an open source interactive chess GUI that is meant to be a substitute for chess sets.</p>
             <p>BBC does not use a chess engine, so you cannot play against the computer.<br> There are no constraints and rule checking &mdash; <b>constraints and rules are to be enforced by the players</b> just like in an actual game. This means that the players have to call check, mate, and make sure no illegal moves are played.</p>
             <p>To learn more about this personal project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a><br>If you liked this, check out a more complex chess project of mine: <a href="http://code.google.com/p/divs/">DIVS</a></p>
-            <!--button class="start" style="color: #fff; padding: 2px 5px; border: 2px solid; border-color: #7bf #07c #07c #7bf; background-color: #09f; font-family: Georgia, ..., serif; font-size: 18px; display: block; height: 30px; width: 250px;">Begin Battle</button-->
         </div>
         <div id="game"> <!-- Initial board setup -->
         <table id="board" cellspacing="0" border="5" style="font-size:25px; cursor:hand;">
