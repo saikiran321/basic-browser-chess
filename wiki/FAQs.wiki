@@ -27,7 +27,7 @@ _Pros:_
   * Source code is well written, easy to understand (development version)
   * Simple functionality, don't get distracted by hundreds of features
   * User friendly interface
-  * No internet connection needed
+  * No internet connection needed (if running locally)
   * Very light application, runs fine on weaker machines
 _Cons:_
   * No chess engine, so you cannot play the computer
