@@ -1,0 +1,602 @@
+<!--
+    Basic Browser Chess (BBC) is a basic interactive chessboard to be used via your browser to play local games of chess.
+
+    Copyright (C) 2010  Dennis M.C. Ideler (ideler@acm.org)
+
+    LICENSE:
+    =======
+    Basic Browser Chess is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Basic Browser Chess is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html>
+<head>
+    <title>Basic Browser Chess - BBC</title>
+    <meta name="Keywords" content="chess,browser,turn-based,basic,multiplayer,local,unicode">
+    <meta name="Description" content="BBC is a free local multiplayer chess game that focuses on simplicity. There is no AI, no constraints, and the game is made with HTML and JavaScript.">
+    <style type="text/css"> 
+    body {
+        background-color: #999999;
+        font-size:12px;
+        font-family:Verdana, Arial, Helvetica, sans-serif;
+    }
+    div#outer {
+        width: 80%;
+        background-color:#FFFFFF;
+        margin-top: 50px;
+        margin-bottom: 50px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0px;
+        border: thin solid #000000;
+    }
+    div#header {
+        padding: 15px;
+        margin: 0px;
+        text-align: center;
+    }
+    div#options {
+        width: 23%; <!-- originally 25% -->
+        padding: 10px;
+        margin-top: 1px;
+        float: left;
+    }
+    div#intro {
+        margin-left: 20%;
+        margin-right: 20%;
+        margin-top: 1px; <!-- TODO possibly remove top margin and padding, add right margin -->
+        padding: 10px;
+        display: none;
+    }
+    div#game {
+        margin-left: 35%; <!-- TODO 34% is a bit more centred? -->
+        margin-top: 1px;
+        padding: 10px;
+    }
+    div#footer {
+        padding: 15px;
+        margin: 0px;
+        border-top: thin solid #000000;
+    }
+    table#board td {
+        border: none;
+    }
+    noscript {
+        margin-left: 5%;
+        font-size: 18px;
+        color: red;
+    }
+    div#reportBug {
+		text-align: right;
+	}
+	<!-- TODO style the board in css section (eg colour, width, height), not in table section -->
+    </style> <!-- TODO fix padding for large and small board (and for header) -->
+
+    <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
+
+    <script type="text/javascript">
+    var Global = {};
+    //TODO: Clean up globals (eliminate as many as possible first)
+    //		Then try to pass as many as possible!
+    Global.msgVisible=false;
+    Global.pickNum=1; // a move consists of 2 picks (1st square, 2nd square), a turn consists of 4 picks (1 move per player)
+    Global.oldSquare="";
+    Global.oldColour="";
+    Global.fromPiece="";
+    Global.toPiece="";
+    Global.fromSquare="";
+    Global.toSquare="";
+    Global.bigSize=false; //new Boolean(false);
+    Global.space=1;
+    Global.origSize=""; // border size before it's modified
+    Global.colourBoard=false;
+    Global.currBorder=0;
+    Global.moveLog=[ // example
+	['&#9823','e2','e4'],
+    ['&#9823','e7','e5']
+	]
+    </script>
+    
+    <script type="text/javascript">
+    function introMsg()
+    {
+        if(Global.msgVisible==false) // show msg if hidden
+        {
+            $('#intro').fadeIn("fast", function()
+            {
+                $('#hideBtn').val("Hide Intro");
+                $('#hideBtn').attr("id","showBtn");
+            });
+            Global.msgVisible=true;
+        } else
+        {
+            $('#intro').fadeOut("fast", function()
+            {
+                $('#showBtn').val("Show Intro");
+                $('#showBtn').attr('id','hideBtn');
+            });
+            Global.msgVisible=false;
+        }
+	}
+    </script>
+
+    <script type="text/javascript"> // for more on style objects: w3schools.com/jsref/dom_obj_style.asp
+    function pick(id) // The Picking method uses cell ids (preferred because it works regardless of board size)
+    {
+        if(Global.oldSquare == id) return; // if same square clicked, do nothing
+        if(Global.pickNum==1 || Global.pickNum==3) undoBtn.disabled=true; // disable undo if turn not over
+        // using DOM: document.getElementById("undoBtn").disabled=true;
+
+        // restore colour of old square if not initial pick
+        if(Global.oldSquare!="") $('#'+Global.oldSquare).css("background-color",Global.oldColour);
+
+        // retrieve the rgb value of new square to restore it after highlight
+        Global.oldColour = $('#'+id).css("background-color");
+
+        $('#'+id).css("background-color","yellow"); // highlight the selected square
+
+        if(Global.pickNum==2 || Global.pickNum==4) movePiece(Global.oldSquare, id); // move piece if destination has been selected
+
+        if(++Global.pickNum == 5) Global.pickNum = 1; // move complete, increment pick number
+
+        Global.oldSquare=id; // record which square was last used
+    }
+    </script>
+
+    <script type="text/javascript">
+    function movePiece(from, to) // using DOM
+    {
+        var piece = $('#'+from).html();
+
+//TODO: check what colour the first piece is, check what colour the second piece is
+// issue #5
+        if(piece == "&nbsp;") // if first square is empty, do not move
+        {//TODO move code to pick()
+            Global.pickNum--; // decrement to keep turn accurate
+            return;
+        }
+
+        // assign data for the possibility to undo move
+        Global.fromPiece = piece;
+        Global.toPiece = $('#'+to).html();
+        Global.fromSquare = from;
+        Global.toSquare = to;
+
+        // make the swap
+        $('#'+to).html(piece);
+        $('#'+from).html("&nbsp;"); // need fixed space to prevent collapsing
+
+        undoBtn.disabled=false; // move complete, safe to enable the undo button
+
+        // check for pawn promotion
+        promotePawn(piece, to);
+    }
+    </script>
+    
+    <script type="text/javascript">
+    function promotePawn(piece, to)
+    {
+        if(piece.charCodeAt(0) == "9823") // check if unicode of character matches that of a black pawn
+        {
+            switch(to) // promote black pawn if it reaches white's back rank
+            {
+            case 'a1':
+            case 'b1':
+            case 'c1':
+            case 'd1':
+            case 'e1':
+            case 'f1':
+            case 'g1':
+            case 'h1':
+                var promotion=prompt("Promote to:\n(default is Queen)","Q, R, N, or B");
+                break;
+            default:
+                return;
+            }
+            switch(promotion) // check what promotion the player made
+            {
+            case 'R':
+            case 'r':
+                $("#"+to).html('&#9820;');
+                break;
+            case 'N':
+            case 'n':
+                $("#"+to).html('&#9822;');
+                break;
+            case 'B':
+            case 'b':
+                $("#"+to).html('&#9821;');            
+                break;
+            case 'Q':
+            case 'q':
+            default:
+                $("#"+to).html('&#9819;'); // default is Queen
+                return;
+            }
+        }
+        else if(piece.charCodeAt(0) == "9817") // check if white pawn is eligible for promotion
+        {
+            switch(to)
+            {
+            case 'a8':
+            case 'b8':
+            case 'c8':
+            case 'd8':
+            case 'e8':
+            case 'f8':
+            case 'g8':
+            case 'h8':
+                var promotion=prompt("Promote to:\n(default is Queen)","Q, R, N, or B");
+                break;
+            default:
+                return;
+            }
+            switch(promotion)
+            {
+            case 'R':
+            case 'r':
+                $("#"+to).html('&#9814;');
+                break;
+            case 'N':
+            case 'n':
+                $("#"+to).html('&#9816;');
+                break;
+            case 'B':
+            case 'b':
+                $("#"+to).html('&#9815;');            
+                break;
+            case 'Q':
+            case 'q':
+            default:
+                $("#"+to).html('&#9813;'); // default is Queen
+                return;
+            }
+        }
+    }
+    </script>
+    
+    <script type="text/javascript">
+    /* Converts a chess piece to its numeric character reference (NCR) */
+    function convertToNCR(str)
+    {
+        return '&#' + str.charCodeAt(0) + ';'; // add prefix & suffix to dec value
+    }
+    </script>
+
+    <script type="text/javascript">
+    function resize() // discontinued
+    {
+        var board = $('#board');
+        if(Global.bigSize==true) // make board small
+        {   //NOTE: for some reason if(bigSize) doesn't work to test if true
+            if (board.attr('border')!=0) board.attr('border','5'); // decrease borders
+            board.css("font-size","30px");
+            board.attr("cellPadding",1); 
+            $('#board td').attr({'width' : 35, 'height' : 38});
+            $('#sizeBtn').val("Larger Board");
+            Global.bigSize=false;
+        }
+        else // make board big
+        {
+            if (board.attr('border')!=0) board.attr('border','15'); // increase borders
+            board.css("font-size","34px");
+            board.attr("cellPadding",15);
+            $('#board td').attr({'width' : 38, 'height' : 66});
+            $('#sizeBtn').val("Smaller Board");
+            Global.bigSize=true;
+        }
+    }
+    </script>
+
+    <script type="text/javascript">
+    function spacing() // discontinued
+    {
+        $('#board').attr("cellSpacing", Global.space);
+        if (++Global.space==3) Global.space = 0;
+    }
+    </script>
+
+    <script type="text/javascript">
+    function outerBorders()
+    {
+        var borderSize = $('#board').attr('border');
+        if (borderSize != 0) // remove borders
+        {
+            Global.origSize = borderSize;
+            $('#board').attr('border','0');
+        }
+        else // restore borders
+        {
+            $('#board').attr('border',Global.origSize);
+        }
+    }
+    </script>
+
+    <script type="text/javascript">
+    function resetGraphics()
+    {
+        var board = $('#board');
+        board.attr({"border":5, "cellSpacing":0, "cellPadding":1});
+        board.css("font-size","30px");
+        $('#board td').attr({'width':35, 'height':38});
+        $('#sizeBtn').val("Larger Board");
+        Global.bigSize=false;
+    }
+    </script>
+
+    <script type="text/javascript">
+    function resetGame()
+    {
+        var board=document.getElementById('board');
+
+        //TODO maybe put pieces in an array (eg: var blackPieces=["&#9820;", "&#9822;",..., "&#9820;"];)
+
+        // Black's back rank
+        board.rows[0].cells[0].innerHTML="&#9820;"; // R
+        board.rows[0].cells[1].innerHTML="&#9822;"; // N
+        board.rows[0].cells[2].innerHTML="&#9821;"; // B
+        board.rows[0].cells[3].innerHTML="&#9819;"; // Q
+        board.rows[0].cells[4].innerHTML="&#9818;"; // K
+        board.rows[0].cells[5].innerHTML="&#9821;"; // B
+        board.rows[0].cells[6].innerHTML="&#9822;"; // N
+        board.rows[0].cells[7].innerHTML="&#9820;"; // R
+        // White's back rank
+        board.rows[7].cells[0].innerHTML="&#9814;";
+        board.rows[7].cells[1].innerHTML="&#9816;";
+        board.rows[7].cells[2].innerHTML="&#9815;";
+        board.rows[7].cells[3].innerHTML="&#9813;";
+        board.rows[7].cells[4].innerHTML="&#9812;";
+        board.rows[7].cells[5].innerHTML="&#9815;";
+        board.rows[7].cells[6].innerHTML="&#9816;";
+        board.rows[7].cells[7].innerHTML="&#9814;";
+
+        for (var i=0; i < 8; i++)
+        {
+            for (var j=0; j < 8; j++)
+            {
+                switch(i)
+                {
+                case 1:
+                    board.rows[i].cells[j].innerHTML="&#9823;"; // black pawns
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    board.rows[i].cells[j].innerHTML="&nbsp;"; // blank
+                    break;
+                case 6:
+                    board.rows[i].cells[j].innerHTML="&#9817;"; // white pawns
+                    break;
+                default:
+                }
+            }
+        }
+
+        $('#'+Global.oldSquare).css("background-color",Global.oldColour); // restore colour of last active square
+        Global.oldSquare="";  // reset turn
+        Global.pickNum=1; // ditto
+    }
+    </script>
+
+    <script type="text/javascript">
+    function changeBoard() // more shades at www.december.com/html/spec/colorshades.html
+    {
+    //TODO might be easier to use jQuery's :even and :odd selectors
+    //eg: $('#board td:even').css("background-color", "#bbbbff")
+        var board=document.getElementById('board');
+        for (var i=0; i < 8; i++)
+        {
+            for (var j=0; j < 8; j++)
+            {
+                if(i&1)
+                {
+                    if(Global.colourBoard==false)
+                    {
+                        if(j&1) board.rows[i].cells[j].style.backgroundColor="#EED6AF"; // light
+                        else board.rows[i].cells[j].style.backgroundColor="#A67D3D"; // dark
+                    }
+                    else
+                    {
+                        if(j&1) board.rows[i].cells[j].style.backgroundColor="white"; // light
+                        else board.rows[i].cells[j].style.backgroundColor="lightgrey"; // dark
+                    }
+                }
+                else
+                {
+                    if(Global.colourBoard==false)
+                    {
+                        if(j&1) board.rows[i].cells[j].style.backgroundColor="#A67D3D";
+                        else board.rows[i].cells[j].style.backgroundColor="#EED6AF";
+                    }
+                    else
+                    {
+                        if(j&1) board.rows[i].cells[j].style.backgroundColor="lightgrey";
+                        else board.rows[i].cells[j].style.backgroundColor="white";
+                    }
+                }
+            }
+        }
+
+        // Prevent post-highlighting when changing board colours
+        if (Global.oldSquare!="") // if no move has been made yet, there has been no highlighting, so no worries
+        {
+			var square = $('#'+Global.oldSquare); // get the affected table cell
+			Global.oldColour = square.css("background-color"); // update to prevent showing the old colour
+			square.css("background-color","yellow"); // re-highlight the selected square
+		}
+
+        Global.colourBoard=!Global.colourBoard;
+    }
+    </script>
+
+    <script type="text/javascript">
+    function undo() //TODO movelog array to go back many steps
+    {
+        document.getElementById(Global.toSquare).innerHTML=Global.toPiece;
+        document.getElementById(Global.fromSquare).innerHTML=Global.fromPiece;
+        $('#'+Global.oldSquare).css("background-color",Global.oldColour); // restore colour of last active square
+        undoBtn.disabled=true; // disallow multiple undos
+        // NOTE: might be better to use jQuery's :disabled selector
+        alert(Global.moveLog[0]); // "e2,e4"
+        alert(Global.moveLog[0][0]); // "e2"
+    }
+    </script>
+
+    <script type="text/javascript"> // www.w3.org/TR/CSS2/tables.html#table-border-styles
+    function innerBorders() // switch to outset style
+    {
+        var borders = ["none","dotted","dashed","solid","double","groove","ridge","inset","outset"];
+        if(++Global.currBorder == 9) Global.currBorder = 0;
+        $('td').css("border-style",borders[Global.currBorder]);
+    }
+    </script>
+
+    <script type="text/javascript"> // Google Analytics
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-12164595-4']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+
+</head>
+
+<body>
+    <!-- Michael Meadhra from TechRepublic wrote a great guide for centred layouts (http://search.techrepublic.com.com/search/Michael%20Meadhra.html) -->
+    <div id="outer">
+        <div id="header">
+            <h2 style="color: #09f;">Basic Browser Chess (BBC)</h2>
+        </div>
+        <div id="options">
+            <h4><center>Options</center></h4>
+            <ul>
+                <li><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
+                <li><input type="button" id="hideBtn" onclick="introMsg()" value="Show Intro" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
+                <li><input type="button" id="undoBtn" onclick="undo()" value="Undo Move" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
+                <li><input type="button" id="colourBtn" onclick="changeBoard()" value="Change Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
+                <!--li><input type="button" id="sizeBtn" onclick="resize()" value="Larger Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li--> 
+                <li><input type="button" id="resetLookBtn" onclick="resetGraphics()" value="Reset Graphics" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
+                <li><input type="button" id="outerBorderBtn" onclick="outerBorders()" value="Outer Border" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
+                <li><input type="button" id="innerBorderBtn" onclick="innerBorders()" value="Inner Borders" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
+                <!--li><input type="button" id="spaceBtn" onclick="spacing()" value="Change Cellspacing" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li-->
+            </ul>
+        </div>
+        <noscript>Note: Please enable client-side scripting to use BBC</noscript>
+        <div id="intro">
+            <p>BBC is an open source interactive chess GUI that is meant to be a substitute for chess sets.</p>
+            <p>BBC does not use a chess engine, so you cannot play against the computer.<br> There are no constraints and rule checking &mdash; <b>constraints and rules are to be enforced by the players</b> just like in an actual game. This means that the players have to call check, mate, and make sure no illegal moves are played.</p>
+            <p>To learn more about this personal project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a><br>If you liked this, check out a more complex chess project of mine: <a href="http://code.google.com/p/divs/">DIVS</a></p>
+        </div>
+        <div id="game"> <!-- Initial board setup -->
+        <table id="board" cellspacing="0" border="5" style="font-size:30px; cursor:hand;">
+        <tr>
+        <!-- <td onmouseover="this.style.background='red';this.style.cursor='pointer'"onmouseout="this.style.background='white';" onclick="alert('test')">Test</td> -->
+            <td id="a8" title="a8" align="center" width=35 height=38 onclick="pick(id)"><!--font size="5"-->&#9820;</td>
+            <td id="b8" title="b8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9822;</td>
+            <td id="c8" title="c8" align="center" width=35 height=38 onclick="pick(id)">&#9821;</td>
+            <td id="d8" title="d8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9819;</td>
+            <td id="e8" title="e8" align="center" width=35 height=38 onclick="pick(id)">&#9818;</td>
+            <td id="f8" title="f8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9821;</td>
+            <td id="g8" title="g8" align="center" width=35 height=38 onclick="pick(id)">&#9822;</td>
+            <td id="h8" title="h8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9820;</td>
+        </tr>
+        <tr>
+            <td id="a7" title="a7" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9823;</td>
+            <td id="b7" title="b7" align="center" width=35 height=38 onclick="pick(id)">&#9823;</td>
+            <td id="c7" title="c7" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9823;</td>
+            <td id="d7" title="d7" align="center" width=35 height=38 onclick="pick(id)">&#9823;</td>
+            <td id="e7" title="e7" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9823;</td>
+            <td id="f7" title="f7" align="center" width=35 height=38 onclick="pick(id)">&#9823;</td>
+            <td id="g7" title="g7" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9823;</td>
+            <td id="h7" title="h7" align="center" width=35 height=38 onclick="pick(id)">&#9823;</td>
+        </tr>
+        <tr>
+            <td id="a6" title="a6" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="b6" title="b6" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="c6" title="c6" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="d6" title="d6" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="e6" title="e6" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="f6" title="f6" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="g6" title="g6" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="h6" title="h6" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+        </tr>
+        <tr>
+            <td id="a5" title="a5" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="b5" title="b5" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="c5" title="c5" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="d5" title="d5" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="e5" title="e5" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="f5" title="f5" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="g5" title="g5" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="h5" title="h5" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+        </tr>
+        <tr>
+            <td id="a4" title="a4" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="b4" title="b4" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="c4" title="c4" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="d4" title="d4" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="e4" title="e4" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="f4" title="f4" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="g4" title="g4" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="h4" title="h4" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+        </tr>
+        <tr>
+            <td id="a3" title="a3" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="b3" title="b3" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="c3" title="c3" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="d3" title="d3" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="e3" title="e3" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="f3" title="f3" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+            <td id="g3" title="g3" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&nbsp;</td>
+            <td id="h3" title="h3" align="center" width=35 height=38 onclick="pick(id)">&nbsp;</td>
+        </tr>
+        <tr>
+            <td id="a2" title="a2" align="center" width=35 height=38 onclick="pick(id)">&#9817;</td>
+            <td id="b2" title="b2" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9817;</td>
+            <td id="c2" title="c2" align="center" width=35 height=38 onclick="pick(id)">&#9817;</td>
+            <td id="d2" title="d2" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9817;</td>
+            <td id="e2" title="e2" align="center" width=35 height=38 onclick="pick(id)">&#9817;</td>
+            <td id="f2" title="f2" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9817;</td>
+            <td id="g2" title="g2" align="center" width=35 height=38 onclick="pick(id)">&#9817;</td>
+            <td id="h2" title="h2" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9817;</td>
+        </tr>
+        <tr>
+            <td id="a1" title="a1" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9814;</td>
+            <td id="b1" title="b1" align="center" width=35 height=38 onclick="pick(id)">&#9816;</td>
+            <td id="c1" title="c1" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9815;</td>
+            <td id="d1" title="d1" align="center" width=35 height=38 onclick="pick(id)">&#9813;</td>
+            <td id="e1" title="e1" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9812;</td>
+            <td id="f1" title="f1" align="center" width=35 height=38 onclick="pick(id)">&#9815;</td>
+            <td id="g1" title="g1" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9816;</td>
+            <td id="h1" title="h1" align="center" width=35 height=38 onclick="pick(id)">&#9814;</td>
+        </tr>
+        </table>
+        </div>
+        <div id="footer">
+            <a href="http://www.gnu.org/licenses/gpl.html" target="_blank"><img src="images/gplv3-88x31.png" border="0" alt="General Public License v3"/></a>
+            Copyright &copy; <script type="text/javascript"> var date = new Date(); document.write(date.getFullYear());</script>
+            <a href="https://sites.google.com/site/idelerdennis/home"> Dennis M.C. Ideler</a> (
+            <a href="http://www.google.com/recaptcha/mailhide/d?k=01xb4CHcW0WAJkxaSdlS-pIQ==&amp;c=s4d8GEf0Sz-qgtbGJNNd6g==" 
+            onclick="window.open('http://www.google.com/recaptcha/mailhide/d?k\07501xb4CHcW0WAJkxaSdlS-pIQ\75\75\46c\75s4d8GEf0Sz-qgtbGJNNd6g\75\075', '', 
+            'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;" title="Reveal this e-mail address">id...er@acm.org</a> )
+            <div id="reportBug">
+            <a href="http://code.google.com/p/basic-browser-chess/issues/entry">Found a bug?</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
