@@ -23,7 +23,8 @@
     <title>Basic Browser Chess - BBC</title>
     <meta name="Keywords" content="chess,browser,turn-based,basic,multiplayer,local,unicode">
     <meta name="Description" content="BBC is a free local multiplayer chess game that focuses on simplicity. There is no AI, no constraints, and the game is made with HTML and JavaScript.">
-    <style type="text/css"> 
+    <!--link  href="//fonts.googleapis.com/css?family=Reenie+Beanie:regular" rel="stylesheet" type="text/css"-->
+    <style type="text/css">
     body {
         background-color: #999999;
         font-size:12px;
@@ -43,6 +44,17 @@
         padding: 15px;
         margin: 0px;
         text-align: center;
+        color: #09f;
+        <!--font-family: 'Reenie Beanie', serif;
+        font-size: 28px;
+        font-style: normal;
+        font-weight: 400;
+        text-shadow: 8px 8px 8px #ddd;
+        text-decoration: none;
+        text-transform: capitalize;
+        letter-spacing: 0em;
+        word-spacing: 0em;
+        line-height: 1em;-->
     }
     div#options {
         width: 23%; <!-- originally 25% -->
@@ -58,7 +70,7 @@
         display: none;
     }
     div#game {
-        margin-left: 35%; <!-- TODO 34% is a bit more centred? -->
+        margin-left: 30%;
         margin-top: 1px;
         padding: 10px;
     }
@@ -69,6 +81,8 @@
     }
     table#board td {
         border: none;
+        width: 41px;
+        height: 43px;
     }
     noscript {
         margin-left: 5%;
@@ -79,7 +93,7 @@
 		text-align: right;
 	}
 	<!-- TODO style the board in css section (eg colour, width, height), not in table section -->
-    </style> <!-- TODO fix padding for large and small board (and for header) -->
+    </style>
 
     <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
 
@@ -100,9 +114,10 @@
     Global.origSize=""; // border size before it's modified
     Global.colourBoard=false;
     Global.currBorder=0;
-    Global.moveLog=[ // example
-	['&#9823','e2','e4'],
-    ['&#9823','e7','e5']
+    Global.moveLog=
+    [ // example
+	    ['&#9823','e2','e4'],
+        ['&#9823;','e7','e5']
 	]
     </script>
     
@@ -442,13 +457,15 @@
     <script type="text/javascript">
     function undo() //TODO movelog array to go back many steps
     {
-        document.getElementById(Global.toSquare).innerHTML=Global.toPiece;
-        document.getElementById(Global.fromSquare).innerHTML=Global.fromPiece;
+        $('#'+Global.toSquare).html(Global.toPiece);
+        $('#'+Global.fromSquare).html(Global.fromPiece);
         $('#'+Global.oldSquare).css("background-color",Global.oldColour); // restore colour of last active square
         undoBtn.disabled=true; // disallow multiple undos
         // NOTE: might be better to use jQuery's :disabled selector
-        alert(Global.moveLog[0]); // "e2,e4"
-        alert(Global.moveLog[0][0]); // "e2"
+        alert(Global.moveLog[0]); // "pawn","e2,e4"
+        //alert(Global.moveLog[0][0]); // "pawn"
+        //alert(Global.moveLog[0][1]); // "e2"
+        //alert(Global.moveLog[0][2]); // "e4"
     }
     </script>
 
@@ -479,7 +496,7 @@
     <!-- Michael Meadhra from TechRepublic wrote a great guide for centred layouts (http://search.techrepublic.com.com/search/Michael%20Meadhra.html) -->
     <div id="outer">
         <div id="header">
-            <h2 style="color: #09f;">Basic Browser Chess (BBC)</h2>
+            <h2>Basic Browser Chess</h2> <!--TODO use a custom font from Google fonts -->
         </div>
         <div id="options">
             <h4><center>Options</center></h4>
@@ -497,9 +514,9 @@
         </div>
         <noscript>Note: Please enable client-side scripting to use BBC</noscript>
         <div id="intro">
-            <p>BBC is an open source interactive chess GUI that is meant to be a substitute for chess sets.</p>
+            <p>Basic Browser Chess (BBC) is an open source interactive chess GUI that is meant to be a substitute for chess sets.</p>
             <p>BBC does not use a chess engine, so you cannot play against the computer.<br> There are no constraints and rule checking &mdash; <b>constraints and rules are to be enforced by the players</b> just like in an actual game. This means that the players have to call check, mate, and make sure no illegal moves are played.</p>
-            <p>To learn more about this personal project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a><br>If you liked this, check out a more complex chess project of mine: <a href="http://code.google.com/p/divs/">DIVS</a></p>
+            <p>To learn more about this personal project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a><br>If you like this, check out a more complex chess project by Viktor and I: <a href="http://code.google.com/p/divs/">DIVS</a></p>
         </div>
         <div id="game"> <!-- Initial board setup -->
         <table id="board" cellspacing="0" border="5" style="font-size:30px; cursor:hand;">
