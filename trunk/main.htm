@@ -76,15 +76,15 @@
         padding: 10px;
     }
     div#log {
-        margin-left: 20%;
-        margin-right: 20%;
+        margin-right: 8%;
+        margin-top: 2%;
         float: right;
-        height: 200px;
-        width: 80px;
-        overflow: auto;
+        height: 50%;
+        width: 100px;
+        overflow-y: scroll; /* was auto before*/
         border: 1px solid #666;
-        background-color: #ccc;
-        padding: 8px;
+/*        background-color: #ccc;*/
+        padding: 10px;
     }
     div#footer {
         padding: 15px;
@@ -542,6 +542,8 @@
             <p>BBC does not use a chess engine, so you cannot play against the computer.<br> There are no constraints and rule checking &mdash; <b>constraints and rules are to be enforced by the players</b> just like in an actual game. This means that the players have to call check, mate, and make sure no illegal moves are played.</p>
             <p>To learn more about this personal project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a><br>If you like this, check out a more complex chess project by Viktor and I: <a href="http://code.google.com/p/divs/">DIVS</a></p>
         </div>
+        <div id="log">
+        </div>
         <div id="game"> <!-- Initial board setup -->
         <table id="board" cellspacing="0" border="5" style="font-size:30px; cursor:hand;">
         <tr>
@@ -626,8 +628,6 @@
             <td id="h1" title="h1" align="center" width=35 height=38 onclick="pick(id)">&#9814;</td>
         </tr>
         </table>
-        </div>
-        <div id="log">
         </div>
         <div id="footer">
             <a href="http://www.gnu.org/licenses/gpl.html" target="_blank"><img src="images/gplv3-88x31.png" border="0" alt="General Public License v3"/></a>
