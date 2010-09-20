@@ -8,7 +8,7 @@ I created BBC as a personal project to learn how to create  [http://www.w3school
 I am offering it as [http://www.gnu.org/philosophy/free-sw.html free software] to make chess more accessible to the world.
 
 ===Why would I use this?===
-Players who do not have any chess equipment can still play local games with a friend using BBC as long as they have a browser on their computer (virtually every computer nowadays).
+Players who do not have any chess equipment can still play local games with friends using BBC as long as they have a browser on their computer and good Unicode support (virtually every computer nowadays). Players can also use it on their own to practice openings, replay games, and whatever else they would be able to do with a tangible chess set.
 
 ===What should I know before I use this?===
 BBC was made with the _Keep It Simple_ (KIS) principle in mind.
