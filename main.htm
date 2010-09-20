@@ -23,7 +23,7 @@
     <title>Basic Browser Chess - BBC</title>
     <meta name="Keywords" content="chess,browser,turn-based,basic,multiplayer,local,unicode">
     <meta name="Description" content="BBC is a free local multiplayer chess game that focuses on simplicity. There is no AI, no constraints, and the game is made with HTML and JavaScript.">
-    <!--link  href="//fonts.googleapis.com/css?family=Reenie+Beanie:regular" rel="stylesheet" type="text/css"-->
+    <link  href="//fonts.googleapis.com/css?family=Reenie+Beanie:regular" rel="stylesheet" type="text/css">
     <style type="text/css">
     body {
         background-color: #999999;
@@ -45,7 +45,7 @@
         margin: 0px;
         text-align: center;
         color: #09f;
-        <!--font-family: 'Reenie Beanie', serif;
+        /*font-family: 'Reenie Beanie', serif;*/
         font-size: 28px;
         font-style: normal;
         font-weight: 400;
@@ -54,10 +54,11 @@
         text-transform: capitalize;
         letter-spacing: 0em;
         word-spacing: 0em;
-        line-height: 1em;-->
+        line-height: 1em;
     }
     div#options {
-        width: 23%; <!-- originally 25% -->
+        text-align: center;
+        width: 23%; /* originally 25% */
         padding: 10px;
         margin-top: 1px;
         float: left;
@@ -65,7 +66,7 @@
     div#intro {
         margin-left: 20%;
         margin-right: 20%;
-        margin-top: 1px; <!-- TODO possibly remove top margin and padding, add right margin -->
+        margin-top: 1px; /* TODO possibly remove top margin and padding, add right margin */
         padding: 10px;
         display: none;
     }
@@ -73,6 +74,17 @@
         margin-left: 30%;
         margin-top: 1px;
         padding: 10px;
+    }
+    div#log {
+        margin-left: 20%;
+        margin-right: 20%;
+        float: right;
+        height: 200px;
+        width: 80px;
+        overflow: auto;
+        border: 1px solid #666;
+        background-color: #ccc;
+        padding: 8px;
     }
     div#footer {
         padding: 15px;
@@ -92,7 +104,6 @@
     div#reportBug {
 		text-align: right;
 	}
-	<!-- TODO style the board in css section (eg colour, width, height), not in table section -->
     </style>
 
     <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
@@ -105,20 +116,13 @@
     Global.pickNum=1; // a move consists of 2 picks (1st square, 2nd square), a turn consists of 4 picks (1 move per player)
     Global.oldSquare="";
     Global.oldColour="";
-    Global.fromPiece="";
-    Global.toPiece="";
-    Global.fromSquare="";
-    Global.toSquare="";
     Global.bigSize=false; //new Boolean(false);
     Global.space=1;
     Global.origSize=""; // border size before it's modified
     Global.colourBoard=false;
     Global.currBorder=0;
-    Global.moveLog=
-    [ // example
-	    ['&#9823','e2','e4'],
-        ['&#9823;','e7','e5']
-	]
+    Global.moveNum=0;
+    Global.moveLog=[]; // a 2D array (becomes 2D when we insert the moves) to log the moves
     </script>
     
     <script type="text/javascript">
@@ -151,7 +155,7 @@
         if(Global.pickNum==1 || Global.pickNum==3) undoBtn.disabled=true; // disable undo if turn not over
         // using DOM: document.getElementById("undoBtn").disabled=true;
 
-        // restore colour of old square if not initial pick
+        // restore colour of old square if not initial pick - can also check if Global.moveNum == 0
         if(Global.oldSquare!="") $('#'+Global.oldSquare).css("background-color",Global.oldColour);
 
         // retrieve the rgb value of new square to restore it after highlight
@@ -175,22 +179,28 @@
 //TODO: check what colour the first piece is, check what colour the second piece is
 // issue #5
         if(piece == "&nbsp;") // if first square is empty, do not move
-        {//TODO move code to pick()
+        {//TODO move code to pick()?
             Global.pickNum--; // decrement to keep turn accurate
             return;
         }
 
         // assign data for the possibility to undo move
-        Global.fromPiece = piece;
-        Global.toPiece = $('#'+to).html();
-        Global.fromSquare = from;
-        Global.toSquare = to;
-
+        var toPiece = $('#'+to).html(); // keep track of what was captured
+        
         // make the swap
         $('#'+to).html(piece);
         $('#'+from).html("&nbsp;"); // need fixed space to prevent collapsing
 
-        undoBtn.disabled=false; // move complete, safe to enable the undo button
+        Global.moveLog[++Global.moveNum] = [piece, from, to, toPiece];// log the move
+        //for(var i = 1; i <= Global.moveNum; i++) alert(Global.moveLog[i]);
+        var move = (Global.moveNum % 2 == 0) ? // print the move
+            Global.moveLog[Global.moveNum][0]+Global.moveLog[Global.moveNum][1] :
+            Math.ceil(Global.moveNum / 2)+". "+Global.moveLog[Global.moveNum][0]+Global.moveLog[Global.moveNum][1]+" ";
+        var txt = document.createTextNode(move+"\n");
+        document.getElementById('log').appendChild(txt);
+        
+        // move complete, allow undo
+        undoBtn.disabled=false;
 
         // check for pawn promotion
         promotePawn(piece, to);
@@ -337,7 +347,7 @@
     </script>
 
     <script type="text/javascript">
-    function resetGraphics()
+    function resetGraphics() // discontinued
     {
         var board = $('#board');
         board.attr({"border":5, "cellSpacing":0, "cellPadding":1});
@@ -457,15 +467,29 @@
     <script type="text/javascript">
     function undo() //TODO movelog array to go back many steps
     {
-        $('#'+Global.toSquare).html(Global.toPiece);
-        $('#'+Global.fromSquare).html(Global.fromPiece);
-        $('#'+Global.oldSquare).css("background-color",Global.oldColour); // restore colour of last active square
-        undoBtn.disabled=true; // disallow multiple undos
-        // NOTE: might be better to use jQuery's :disabled selector
-        alert(Global.moveLog[0]); // "pawn","e2,e4"
-        //alert(Global.moveLog[0][0]); // "pawn"
-        //alert(Global.moveLog[0][1]); // "e2"
-        //alert(Global.moveLog[0][2]); // "e4"
+		// place captured piece (if any) back
+        $('#'+Global.moveLog[Global.moveNum][2]).html(Global.moveLog[Global.moveNum][3]);
+        
+        // place attacking piece back, and decrement moveNum after operation
+        $('#'+Global.moveLog[Global.moveNum][1]).html(Global.moveLog[Global.moveNum--][0]);
+        
+        // restore colour of last active square
+        $('#'+Global.oldSquare).css("background-color",Global.oldColour);
+        
+        // remove move from log
+        var lastMove = document.getElementById('log').lastChild;
+        document.getElementById('log').removeChild(lastMove);
+        
+        // disable undo if there is nothing to undo
+        if(Global.moveNum==0) undoBtn.disabled=true;
+        
+        /* Example:
+         * Global.moveLog[1]) "white pawn, e2, d3, black pawn"
+         * Global.moveLog[1][0]) "white pawn" = the attacking piece
+         * Global.moveLog[1][1]) "e2" = origin
+         * Global.moveLog[1][2]) "d3" = destination
+         * Global.moveLog[1][3]) "black pawn" = the captured piece
+         */
     }
     </script>
 
@@ -496,20 +520,20 @@
     <!-- Michael Meadhra from TechRepublic wrote a great guide for centred layouts (http://search.techrepublic.com.com/search/Michael%20Meadhra.html) -->
     <div id="outer">
         <div id="header">
-            <h2>Basic Browser Chess</h2> <!--TODO use a custom font from Google fonts -->
+            <h2>Basic Browser Chess</h2>
         </div>
         <div id="options">
             <h4><center>Options</center></h4>
             <ul>
-                <li><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
-                <li><input type="button" id="hideBtn" onclick="introMsg()" value="Show Intro" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
-                <li><input type="button" id="undoBtn" onclick="undo()" value="Undo Move" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
-                <li><input type="button" id="colourBtn" onclick="changeBoard()" value="Change Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li> 
-                <!--li><input type="button" id="sizeBtn" onclick="resize()" value="Larger Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li--> 
-                <li><input type="button" id="resetLookBtn" onclick="resetGraphics()" value="Reset Graphics" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
-                <li><input type="button" id="outerBorderBtn" onclick="outerBorders()" value="Outer Border" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
-                <li><input type="button" id="innerBorderBtn" onclick="innerBorders()" value="Inner Borders" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li>
-                <!--li><input type="button" id="spaceBtn" onclick="spacing()" value="Change Cellspacing" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 150px; font-weight: 900;"></li-->
+                <li><input type="button" id="resetGameBtn" onclick="resetGame()" value="Reset Game" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 140px; font-weight: 900;"></li>
+                <li><input type="button" id="hideBtn" onclick="introMsg()" value="Show Intro" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 140px; font-weight: 900;"></li>
+                <li><input type="button" id="undoBtn" onclick="undo()" value="Undo Move" disabled="disabled" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 140px; font-weight: 900;"></li> 
+                <li><input type="button" id="colourBtn" onclick="changeBoard()" value="Change Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 140px; font-weight: 900;"></li> 
+                <!--li><input type="button" id="sizeBtn" onclick="resize()" value="Larger Board" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 140px; font-weight: 900;"></li--> 
+                <!--li><input type="button" id="resetLookBtn" onclick="resetGraphics()" value="Reset Graphics" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 140px; font-weight: 900;"></li-->
+                <li><input type="button" id="outerBorderBtn" onclick="outerBorders()" value="Outer Border" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 140px; font-weight: 900;"></li>
+                <li><input type="button" id="innerBorderBtn" onclick="innerBorders()" value="Inner Borders" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 140px; font-weight: 900;"></li>
+                <!--li><input type="button" id="spaceBtn" onclick="spacing()" value="Change Cellspacing" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 140px; font-weight: 900;"></li-->
             </ul>
         </div>
         <noscript>Note: Please enable client-side scripting to use BBC</noscript>
@@ -522,7 +546,7 @@
         <table id="board" cellspacing="0" border="5" style="font-size:30px; cursor:hand;">
         <tr>
         <!-- <td onmouseover="this.style.background='red';this.style.cursor='pointer'"onmouseout="this.style.background='white';" onclick="alert('test')">Test</td> -->
-            <td id="a8" title="a8" align="center" width=35 height=38 onclick="pick(id)"><!--font size="5"-->&#9820;</td>
+            <td id="a8" title="a8" align="center" width=35 height=38 onclick="pick(id)">&#9820;</td>
             <td id="b8" title="b8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9822;</td>
             <td id="c8" title="c8" align="center" width=35 height=38 onclick="pick(id)">&#9821;</td>
             <td id="d8" title="d8" align="center" width=35 height=38 onclick="pick(id)" bgcolor="lightgrey">&#9819;</td>
@@ -602,6 +626,8 @@
             <td id="h1" title="h1" align="center" width=35 height=38 onclick="pick(id)">&#9814;</td>
         </tr>
         </table>
+        </div>
+        <div id="log">
         </div>
         <div id="footer">
             <a href="http://www.gnu.org/licenses/gpl.html" target="_blank"><img src="images/gplv3-88x31.png" border="0" alt="General Public License v3"/></a>
