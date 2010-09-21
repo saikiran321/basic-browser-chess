@@ -194,8 +194,8 @@
         Global.moveLog[++Global.moveNum] = [piece, from, to, toPiece];// log the move
         //for(var i = 1; i <= Global.moveNum; i++) alert(Global.moveLog[i]);
         var move = (Global.moveNum % 2 == 0) ? // print the move
-            Global.moveLog[Global.moveNum][0]+Global.moveLog[Global.moveNum][1] :
-            Math.ceil(Global.moveNum / 2)+". "+Global.moveLog[Global.moveNum][0]+Global.moveLog[Global.moveNum][1]+" ";
+            Global.moveLog[Global.moveNum][0]+Global.moveLog[Global.moveNum][2] :
+            Math.ceil(Global.moveNum / 2)+". "+Global.moveLog[Global.moveNum][0]+Global.moveLog[Global.moveNum][2]+" ";
         var txt = document.createTextNode(move+"\n");
         document.getElementById('log').appendChild(txt);
         
@@ -536,7 +536,7 @@
                 <!--li><input type="button" id="spaceBtn" onclick="spacing()" value="Change Cellspacing" style="color: #fff; font-size: 14px; background-color: #09f; height: 30px; width: 140px; font-weight: 900;"></li-->
             </ul>
         </div>
-        <noscript>Note: Please enable client-side scripting to use BBC</noscript>
+        <noscript>Please enable client-side scripting to use BBC</noscript>
         <div id="intro">
             <p>Basic Browser Chess (BBC) is an open source interactive chess GUI that is meant to be a substitute for chess sets.</p>
             <p>BBC does not use a chess engine, so you cannot play against the computer.<br> There are no constraints and rule checking &mdash; <b>constraints and rules are to be enforced by the players</b> just like in an actual game. This means that the players have to call check, mate, and make sure no illegal moves are played.</p>
