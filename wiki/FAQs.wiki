@@ -37,3 +37,9 @@ _Cons:_
 ===Why a .org domain name?===
 BBC is hosted online at http://chess.kicks-ass.org. Domains ending with .org tend to be used for nonprofits; personal sites; open-source projects; and sometimes by commercial entities.
 See http://en.wikipedia.org/wiki/.org#Example_use
+
+===What IDE / text editor did you use?===
+I used [http://www.geany.org/ Geany], it's a text editor / lightweight IDE.
+
+===What browser did you test in / develop for?===
+I mainly test with Google Chrome. I occasionally test in Konquerer, Internet Explorer and FireFox as well, but don't be surprised if something seems weird when using those browsers with BBC.
