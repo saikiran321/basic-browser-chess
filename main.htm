@@ -1,22 +1,21 @@
 <!--
-    Basic Browser Chess (BBC) is a basic interactive chessboard to be used via your browser to play local games of chess.
+ Basic Browser Chess (BBC) is a basic interactive chessboard to be used 
+ via your browser to play local games of chess.
 
-    Copyright (C) 2010  Dennis M.C. Ideler (ideler@acm.org)
+ Copyright (C) 2010  Dennis M.C. Ideler (ideler@acm.org)
 
-    LICENSE:
-    =======
-    Basic Browser Chess is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ Basic Browser Chess is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    Basic Browser Chess is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ Basic Browser Chess is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <html>
 <head>
@@ -80,7 +79,7 @@
         margin-top: 2%;
         float: right;
         height: 50%;
-        width: 100px;
+        width: 98px;
         overflow-y: scroll; /* was auto before*/
         border: 1px solid #666;
 /*        background-color: #ccc;*/
@@ -108,19 +107,15 @@
 
     <script type="text/javascript" src="jquery-1.4.2.min.js"></script>
 
-    <script type="text/javascript">
+    <script type="text/javascript"> //TODO use DOM scripting instead of jQuery where possible, it's faster
     var Global = {};
-    //TODO: Clean up globals (eliminate as many as possible first)
-    //		Then try to pass as many as possible!
-    Global.msgVisible=false;
+    //TODO: Clean up globals
     Global.pickNum=1; // a move consists of 2 picks (1st square, 2nd square), a turn consists of 4 picks (1 move per player)
     Global.oldSquare="";
     Global.oldColour="";
     Global.bigSize=false; //new Boolean(false);
-    Global.space=1;
     Global.origSize=""; // border size before it's modified
     Global.colourBoard=false;
-    Global.currBorder=0;
     Global.moveNum=0;
     Global.moveLog=[]; // a 2D array (becomes 2D when we insert the moves) to log the moves
     </script>
@@ -128,22 +123,28 @@
     <script type="text/javascript">
     function introMsg()
     {
-        if(Global.msgVisible==false) // show msg if hidden
+        // initialize "static" boolean if it hasn't been already
+        if(typeof introMsg.msgVisible == 'undefined' )
+        {
+            introMsg.msgVisible = false;
+        }
+        if(introMsg.msgVisible==false) // show msg if hidden
         {
             $('#intro').fadeIn("fast", function()
             {
                 $('#hideBtn').val("Hide Intro");
                 $('#hideBtn').attr("id","showBtn");
             });
-            Global.msgVisible=true;
-        } else
+            introMsg.msgVisible=true;
+        }
+        else
         {
             $('#intro').fadeOut("fast", function()
             {
                 $('#showBtn').val("Show Intro");
                 $('#showBtn').attr('id','hideBtn');
             });
-            Global.msgVisible=false;
+            introMsg.msgVisible=false;
         }
 	}
     </script>
@@ -191,19 +192,26 @@
         $('#'+to).html(piece);
         $('#'+from).html("&nbsp;"); // need fixed space to prevent collapsing
 
-        Global.moveLog[++Global.moveNum] = [piece, from, to, toPiece];// log the move
-        //for(var i = 1; i <= Global.moveNum; i++) alert(Global.moveLog[i]);
-        var move = (Global.moveNum % 2 == 0) ? // print the move
-            Global.moveLog[Global.moveNum][0]+Global.moveLog[Global.moveNum][2] :
-            Math.ceil(Global.moveNum / 2)+". "+Global.moveLog[Global.moveNum][0]+Global.moveLog[Global.moveNum][2]+" ";
-        var txt = document.createTextNode(move+"\n");
-        document.getElementById('log').appendChild(txt);
+        logMove(piece, from, to, toPiece);
         
         // move complete, allow undo
         undoBtn.disabled=false;
 
         // check for pawn promotion
         promotePawn(piece, to);
+    }
+    </script>
+    
+    <script type="text/javascript">
+    function logMove(piece, from, to, toPiece)
+    {
+		Global.moveLog[++Global.moveNum] = [piece, from, to, toPiece]; // log move
+        //for(var i = 1; i <= Global.moveNum; i++) alert(Global.moveLog[i]);
+        var move = (Global.moveNum % 2 == 0) ? // print move
+            Global.moveLog[Global.moveNum][0]+Global.moveLog[Global.moveNum][2] :
+            Math.ceil(Global.moveNum / 2)+". "+Global.moveLog[Global.moveNum][0]+Global.moveLog[Global.moveNum][2]+" ";
+        var txt = document.createTextNode(move+"\n");
+        document.getElementById('log').appendChild(txt);
     }
     </script>
     
@@ -325,8 +333,9 @@
     <script type="text/javascript">
     function spacing() // discontinued
     {
-        $('#board').attr("cellSpacing", Global.space);
-        if (++Global.space==3) Global.space = 0;
+        if(typeof spacing.space == 'undefined' ) spacing.space = 1;
+        $('#board').attr("cellSpacing", spacing.space);
+        if (++spacing.space==3) spacing.space = 0;
     }
     </script>
 
@@ -409,7 +418,9 @@
 
         $('#'+Global.oldSquare).css("background-color",Global.oldColour); // restore colour of last active square
         Global.oldSquare="";  // reset turn
-        Global.pickNum=1; // ditto
+        Global.pickNum=1; // reset pick number
+        document.getElementById('log').innerHTML=""; // reset move log
+        Global.moveNum=0; // reset move number
     }
     </script>
 
@@ -496,9 +507,14 @@
     <script type="text/javascript"> // www.w3.org/TR/CSS2/tables.html#table-border-styles
     function innerBorders() // switch to outset style
     {
+		// initialize "static" variable if it hasn't been already
+        if(typeof innerBorders.currBorder == 'undefined' )
+        {
+            innerBorders.currBorder = 0;
+        }
         var borders = ["none","dotted","dashed","solid","double","groove","ridge","inset","outset"];
-        if(++Global.currBorder == 9) Global.currBorder = 0;
-        $('td').css("border-style",borders[Global.currBorder]);
+        if(++innerBorders.currBorder == 9) innerBorders.currBorder = 0;
+        $('td').css("border-style",borders[innerBorders.currBorder]);
     }
     </script>
 
@@ -540,7 +556,7 @@
         <div id="intro">
             <p>Basic Browser Chess (BBC) is an open source interactive chess GUI that is meant to be a substitute for chess sets.</p>
             <p>BBC does not use a chess engine, so you cannot play against the computer.<br> There are no constraints and rule checking &mdash; <b>constraints and rules are to be enforced by the players</b> just like in an actual game. This means that the players have to call check, mate, and make sure no illegal moves are played.</p>
-            <p>To learn more about this personal project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a><br>If you like this, check out a more complex chess project by Viktor and I: <a href="http://code.google.com/p/divs/">DIVS</a></p>
+            <p>To learn more about this personal project, please visit the project page: <a href="http://code.google.com/p/basic-browser-chess/">BBC</a><br>If you like this, check out a more complex chess project by Viktor Stremler and myself: <a href="http://code.google.com/p/divs/">DIVS</a></p>
         </div>
         <div id="log">
         </div>
